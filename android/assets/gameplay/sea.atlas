@@ -1,0 +1,40 @@
+
+sea.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+background_sea
+  rotate: false
+  xy: 1, 1
+  size: 720, 1280
+  orig: 720, 1280
+  offset: 0, 0
+  index: -1
+vehicle_ship
+  rotate: false
+  xy: 723, 1096
+  size: 261, 185
+  orig: 261, 185
+  offset: 0, 0
+  index: -1
+air_balloon
+  rotate: false
+  xy: 723, 970
+  size: 206, 124
+  orig: 206, 124
+  offset: 0, 0
+  index: -1
+air_plane
+  rotate: false
+  xy: 723, 909
+  size: 117, 59
+  orig: 117, 59
+  offset: 0, 0
+  index: -1
+cannon_ship
+  rotate: false
+  xy: 931, 997
+  size: 28, 97
+  orig: 28, 97
+  offset: 0, 0
+  index: -1

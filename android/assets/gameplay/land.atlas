@@ -1,0 +1,54 @@
+
+land.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+background_land
+  rotate: false
+  xy: 1, 1
+  size: 720, 1280
+  orig: 720, 1280
+  offset: 0, 0
+  index: -1
+missile
+  rotate: false
+  xy: 723, 1031
+  size: 250, 250
+  orig: 250, 250
+  offset: 0, 0
+  index: -1
+vehicle_tank
+  rotate: false
+  xy: 723, 858
+  size: 241, 171
+  orig: 241, 171
+  offset: 0, 0
+  index: -1
+cannon_tank
+  rotate: false
+  xy: 723, 589
+  size: 78, 267
+  orig: 78, 267
+  offset: 0, 0
+  index: -1
+war_jet
+  rotate: false
+  xy: 803, 737
+  size: 108, 119
+  orig: 108, 119
+  offset: 0, 0
+  index: -1
+chopper
+  rotate: false
+  xy: 723, 446
+  size: 181, 141
+  orig: 181, 141
+  offset: 0, 0
+  index: -1
+boss_bomb
+  rotate: false
+  xy: 913, 758
+  size: 50, 98
+  orig: 50, 98
+  offset: 0, 0
+  index: -1

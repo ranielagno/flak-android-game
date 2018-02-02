@@ -1,0 +1,82 @@
+
+menu.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+home
+  rotate: false
+  xy: 1, 204
+  size: 720, 1280
+  orig: 720, 1280
+  offset: 0, 0
+  index: -1
+how to screen
+  rotate: false
+  xy: 723, 204
+  size: 720, 1280
+  orig: 720, 1280
+  offset: 0, 0
+  index: -1
+flak title
+  rotate: false
+  xy: 1, 1
+  size: 376, 201
+  orig: 376, 201
+  offset: 0, 0
+  index: -1
+button_back
+  rotate: false
+  xy: 379, 112
+  size: 249, 90
+  orig: 249, 90
+  offset: 0, 0
+  index: -1
+button_battle
+  rotate: false
+  xy: 379, 20
+  size: 249, 90
+  orig: 249, 90
+  offset: 0, 0
+  index: -1
+button_how
+  rotate: false
+  xy: 630, 112
+  size: 249, 90
+  orig: 249, 90
+  offset: 0, 0
+  index: -1
+button_play
+  rotate: false
+  xy: 630, 20
+  size: 249, 90
+  orig: 249, 90
+  offset: 0, 0
+  index: -1
+button_practice
+  rotate: false
+  xy: 881, 112
+  size: 249, 90
+  orig: 249, 90
+  offset: 0, 0
+  index: -1
+button_quit
+  rotate: false
+  xy: 881, 20
+  size: 249, 90
+  orig: 249, 90
+  offset: 0, 0
+  index: -1
+button_score
+  rotate: false
+  xy: 1132, 112
+  size: 249, 90
+  orig: 249, 90
+  offset: 0, 0
+  index: -1
+button_settings
+  rotate: false
+  xy: 1132, 20
+  size: 249, 90
+  orig: 249, 90
+  offset: 0, 0
+  index: -1
