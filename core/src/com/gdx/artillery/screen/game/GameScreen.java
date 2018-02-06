@@ -3,7 +3,10 @@ package com.gdx.artillery.screen.game;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.Logger;
 import com.gdx.artillery.ArtilleryGame;
+import com.gdx.artillery.common.GameState;
+import com.gdx.artillery.common.LevelState;
 import com.gdx.artillery.common.ScoreController;
 import com.gdx.artillery.entity.EntityFactory;
 import com.gdx.artillery.input.CannonInputController;
@@ -15,6 +18,8 @@ import com.gdx.artillery.screen.menu.MenuScreen;
  */
 
 public class GameScreen extends ScreenAdapter {
+
+    private static final Logger LOGGER = new Logger(GameWorld.class.getName(), Logger.DEBUG);
 
     // == attributes ==
     private final ArtilleryGame game;
@@ -52,6 +57,8 @@ public class GameScreen extends ScreenAdapter {
         vehicleInputController = new VehicleInputController(gameWorld.getVehicle(), controller);
         cannonInputController = new CannonInputController(gameWorld.getCannon(), gameWorld.getVehicle(), controller);
 
+        gameWorld.setGameRenderer(renderer);
+        gameWorld.startLevel(LevelState.Level1);
     }
 
     @Override
@@ -62,7 +69,7 @@ public class GameScreen extends ScreenAdapter {
         controller.update(delta);
         renderer.render(delta);
 
-        if (controller.isGameOver()) {
+        if (gameWorld.getGameState().isMenu()) {
             game.setScreen(new MenuScreen(game));
         }
     }

@@ -1,5 +1,6 @@
 package com.gdx.artillery.screen.game;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -9,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Logger;
@@ -16,12 +18,15 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.gdx.artillery.assets.AssetDescriptors;
 import com.gdx.artillery.assets.RegionNames;
+import com.gdx.artillery.common.GameState;
 import com.gdx.artillery.config.GameConfig;
 import com.gdx.artillery.entity.ArtilleryBullet;
 import com.gdx.artillery.entity.ArtilleryCannon;
 import com.gdx.artillery.entity.ArtilleryVehicle;
 import com.gdx.artillery.entity.Background;
 import com.gdx.artillery.entity.EnemyAircraft;
+import com.gdx.artillery.screen.dialog.DialogOverlay;
+import com.gdx.artillery.screen.dialog.OverlayCallback;
 import com.jga.util.GdxUtils;
 
 /**
@@ -54,6 +59,8 @@ public class GameRenderer implements Disposable {
     private TextureAtlas level1Atlas;
     private TextureAtlas level2Atlas;
 
+    private Stage hudStage;
+    private DialogOverlay gameOverOverlay;
 
     // == constructors ==
 
@@ -69,14 +76,18 @@ public class GameRenderer implements Disposable {
         camera = new OrthographicCamera();
         viewport = new FitViewport(GameConfig.WORLD_WIDTH, GameConfig.WORLD_HEIGHT, camera);
         hudViewport = new FitViewport(GameConfig.HUD_WIDTH, GameConfig.HUD_HEIGHT);
+        hudStage = new Stage(hudViewport, batch);
+
         renderer = new ShapeRenderer();
 
         font = assetManager.get(AssetDescriptors.FONT);
 
+        gameOverOverlay = new DialogOverlay(assetManager, gameWorld.getOverlayCallback());
+        hudStage.addActor(gameOverOverlay);
+        Gdx.input.setInputProcessor(hudStage);
+
         level1Atlas = assetManager.get(AssetDescriptors.LAND);
         level2Atlas = assetManager.get(AssetDescriptors.SEA);
-
-        initializeLevel1();
 
     }
 
@@ -185,13 +196,30 @@ public class GameRenderer implements Disposable {
 
     private void renderHud() {
         hudViewport.apply();
-        batch.setProjectionMatrix(hudViewport.getCamera().combined);
 
-        batch.begin();
+        GameState gameState = gameWorld.getGameState();
 
-        drawHud();
+        gameOverOverlay.setVisible(false);
 
-        batch.end();
+        if (gameState.isPlaying()) {
+
+            batch.setProjectionMatrix(hudViewport.getCamera().combined);
+
+            batch.begin();
+
+            drawHud();
+
+            batch.end();
+
+        }
+
+        if (gameState.isGameOver()) {
+            gameOverOverlay.setVisible(true);
+        }
+
+        hudStage.act();
+        hudStage.draw();
+
     }
 
     private void drawHud() {

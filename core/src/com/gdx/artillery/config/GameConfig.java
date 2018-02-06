@@ -46,7 +46,7 @@ public class GameConfig {
 
     public static final int HIT_ENEMY_SCORE = 10;
 
-    public static final float GAME_TIMER_MINUTE = 1f;
+    public static final float GAME_TIMER_MINUTE = 0.1f;
 
     public static final float RELOAD_TIME = 2f;
 

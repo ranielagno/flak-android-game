@@ -30,6 +30,16 @@ public class RegionNames {
     public static final String SEA_BULLET = "missile";
     public static final String ENEMY_BALLOON = "air_balloon";
 
+    // Dialog Atlas
+    public static final String DIALOG_BACKGROUND = "bar";
+    public static final String CONQUERED = "conquered";
+    public static final String CONTINUE = "continue";
+    public static final String DEFEATED = "defeated";
+    public static final String HOME_BUTTON = "home";
+    public static final String RESET_BUTTON = "reset";
+    public static final String NEXT_LEVEL_BUTTON = "next";
+    public static final String PLAY_BUTTON = "play";
+
 
     private RegionNames() {}
 }

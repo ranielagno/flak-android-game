@@ -3,7 +3,6 @@ package com.gdx.artillery.input;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.gdx.artillery.ArtilleryGame;
 import com.gdx.artillery.config.GameConfig;
 import com.gdx.artillery.entity.ArtilleryVehicle;
 import com.gdx.artillery.screen.game.GameController;
@@ -37,26 +36,30 @@ public class VehicleInputController {
         float x = vehicle.getX();
         float y = vehicle.getY();
 
-        if (Gdx.input.isTouched()) {
-            float screenX = Gdx.input.getX();
-            float screenY = Gdx.input.getY();
+        for (int i = 0; i < 2; i++) {
 
-            Vector2 screenCoordinates = new Vector2(screenX, screenY); // in pixels
-            Vector2 worldCoordinates = controller.screenToWorld(screenCoordinates); // world units
+            if (Gdx.input.isTouched(i)) {
+                float screenX = Gdx.input.getX(i);
+                float screenY = Gdx.input.getY(i);
 
-            if (isLeftSideTouched(worldCoordinates)) {
-                x -= GameConfig.VEHICLE_SPEED * delta;
-            } else if (isRightSideTouched(worldCoordinates)) {
-                x += GameConfig.VEHICLE_SPEED * delta;
+                Vector2 screenCoordinates = new Vector2(screenX, screenY); // in pixels
+                Vector2 worldCoordinates = controller.screenToWorld(screenCoordinates); // world units
+
+                if (isLeftSideTouched(worldCoordinates)) {
+                    x -= GameConfig.VEHICLE_SPEED * delta;
+                } else if (isRightSideTouched(worldCoordinates)) {
+                    x += GameConfig.VEHICLE_SPEED * delta;
+                }
+
+                // Logic for block vehicle to leave world bounds
+                if (x <= 0)
+                    x = 0;
+                else if ((x + vehicle.getWidth()) >= GameConfig.WORLD_WIDTH)
+                    x = GameConfig.WORLD_WIDTH - vehicle.getWidth();
+
+                vehicle.setPosition(x, y);
+
             }
-
-            // Logic for block vehicle to leave world bounds
-            if (x <= 0)
-                x = 0;
-            else if ((x + vehicle.getWidth()) >= GameConfig.WORLD_WIDTH )
-                x = GameConfig.WORLD_WIDTH - vehicle.getWidth();
-
-            vehicle.setPosition(x, y);
 
         }
     }

@@ -46,24 +46,28 @@ public class CannonInputController {
 
         float rotation = cannon.getRotation();
 
-        if (Gdx.input.isTouched()) {
-            float screenX = Gdx.input.getX();
-            float screenY = Gdx.input.getY();
+        for (int i = 0; i < 2; i++) {
 
-            Vector2 screenCoordinates = new Vector2(screenX, screenY); // in pixels
-            Vector2 worldCoordinates = controller.screenToWorld(screenCoordinates); // world units
+            if (Gdx.input.isTouched(i)) {
+                float screenX = Gdx.input.getX(i);
+                float screenY = Gdx.input.getY(i);
 
-            if (isLeftSideTouched(worldCoordinates)) {
-                rotation += GameConfig.CANNON_TURNING_SPEED * delta;
-            } else if (isRightSideTouched(worldCoordinates)) {
-                rotation -= GameConfig.CANNON_TURNING_SPEED * delta;
+                Vector2 screenCoordinates = new Vector2(screenX, screenY); // in pixels
+                Vector2 worldCoordinates = controller.screenToWorld(screenCoordinates); // world units
+
+                if (isLeftSideTouched(worldCoordinates)) {
+                    rotation += GameConfig.CANNON_TURNING_SPEED * delta;
+                } else if (isRightSideTouched(worldCoordinates)) {
+                    rotation -= GameConfig.CANNON_TURNING_SPEED * delta;
+                }
+
+                if (rotation <= 60 && rotation >= -60)
+                    cannon.setRotation(rotation);
+
+                //LOGGER.debug("cannon x = " + cannon.getX());
+                //LOGGER.debug("cannnon y = " + cannon.getY());
             }
 
-            if (rotation <= 60 && rotation >= -60)
-                cannon.setRotation(rotation);
-
-            //LOGGER.debug("cannon x = " + cannon.getX());
-            //LOGGER.debug("cannnon y = " + cannon.getY());
         }
     }
 

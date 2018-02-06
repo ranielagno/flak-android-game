@@ -57,7 +57,7 @@ public class LoadingScreen extends ScreenAdapter {
         assetManager.load(AssetDescriptors.LAND);
         assetManager.load(AssetDescriptors.SEA);
         assetManager.load(AssetDescriptors.MENU);
-        assetManager.load(AssetDescriptors.BUTTONS);
+        assetManager.load(AssetDescriptors.DIALOG);
 
         //shassetManager.load(AssetDescriptors.SKIN);
 

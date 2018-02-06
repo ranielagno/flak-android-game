@@ -5,6 +5,8 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
+import com.gdx.artillery.common.GameState;
+import com.gdx.artillery.common.LevelState;
 import com.gdx.artillery.common.ScoreController;
 import com.gdx.artillery.config.GameConfig;
 import com.gdx.artillery.entity.ArtilleryBullet;
@@ -13,8 +15,10 @@ import com.gdx.artillery.entity.ArtilleryVehicle;
 import com.gdx.artillery.entity.Background;
 import com.gdx.artillery.entity.EnemyAircraft;
 import com.gdx.artillery.entity.EntityFactory;
+import com.gdx.artillery.screen.dialog.OverlayCallback;
 
 import java.text.DecimalFormat;
+import java.util.logging.Level;
 
 /**
  * Created by Raniel Agno on 12/28/2017.
@@ -47,11 +51,41 @@ public class GameWorld {
     private boolean playerSurviveThisLevel = false;
     private boolean playerDied = false;
 
+    private LevelState currentLevel;
+
+    private GameState gameState;
+    private OverlayCallback callback;
+
+    private GameRenderer renderer;
 
     // == constructors ==
     public GameWorld(EntityFactory factory, ScoreController scoreController) {
         this.factory = factory;
         this.scoreController = scoreController;
+
+        callback = new OverlayCallback() {
+            @Override
+            public void home() {
+                gameState = GameState.MENU;
+            }
+
+            @Override
+            public void restart() {
+                startLevel(currentLevel);
+            }
+
+            @Override
+            public void nextLevel() {
+
+                if (currentLevel == LevelState.Level1) {
+                    startLevel(LevelState.Level2);
+                } else if (currentLevel == LevelState.Level2) {
+                    gameState = GameState.MENU;
+                }
+            }
+
+        };
+
         init();
     }
 
@@ -83,6 +117,10 @@ public class GameWorld {
         if (reloadTime >= GameConfig.RELOAD_TIME) {
             spawnBullet(cannon);
             reloadTime = 0;
+        }
+
+        if (isGameTimerFinished() && !gameState.isGameOver() && !gameState.isMenu()) {
+            gameState = GameState.GAME_OVER;
         }
 
         updateGameTimer(delta);
@@ -187,14 +225,6 @@ public class GameWorld {
         this.gameTimer = GameConfig.GAME_TIMER_MINUTE * 60f;
     }
 
-    public boolean isPlayerSurviveThisLevel() {
-        return playerSurviveThisLevel;
-    }
-
-    public boolean isPlayerDied() {
-        return playerDied;
-    }
-
     public Background getBackground() {
         return background;
     }
@@ -221,5 +251,29 @@ public class GameWorld {
 
     public String getGameTimeString() {
         return gameTimeString;
+    }
+
+    public GameState getGameState() { return gameState; }
+
+    public OverlayCallback getOverlayCallback() {
+        return callback;
+    }
+
+    public void setGameRenderer(GameRenderer gameRenderer) {
+        this.renderer = gameRenderer;
+    }
+
+    public void startLevel(LevelState levelScreen) {
+        gameState = GameState.PLAYING;
+        currentLevel = levelScreen;
+
+        if (levelScreen == LevelState.Level1) {
+            renderer.initializeLevel1();
+        } else if (levelScreen == LevelState.Level2) {
+            renderer.initializeLevel2();
+        }
+
+        resetGameTimer();
+
     }
 }
