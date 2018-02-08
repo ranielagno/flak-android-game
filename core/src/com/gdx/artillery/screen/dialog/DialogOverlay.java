@@ -101,7 +101,6 @@ public class DialogOverlay extends Table {
 
         add(dialogTable).row();
         add(buttonsTable).padTop(-75).row();
-        debug();
         center();
         setFillParent(true);
         pack();

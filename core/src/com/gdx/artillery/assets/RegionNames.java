@@ -8,7 +8,10 @@ public class RegionNames {
     public static final String LAND_VEHICLE = "vehicle_tank";
     public static final String LAND_CANNON = "cannon_tank";
     public static final String LAND_BULLET = "missile";
-    public static final String ENEMY_CHOPPER = "chopper";
+    public static final String LAND_ENEMY_VEHICLE = "enemy_jet";
+    public static final String LAND_ENEMY_MISSILE = "enemy_missile";
+    public static final String LAND_BOSS = "boss";
+    public static final String LAND_BOSS_MISSILE = "boss_missile";
 
     // Menu Atlas
     public static final String MENU_BACKGROUND = "home";
@@ -28,7 +31,11 @@ public class RegionNames {
     public static final String SEA_VEHICLE = "vehicle_ship";
     public static final String SEA_CANNON = "cannon_ship";
     public static final String SEA_BULLET = "missile";
-    public static final String ENEMY_BALLOON = "air_balloon";
+    public static final String SEA_ENEMY_VEHICLE = "air_plane";
+    public static final String SEA_ENEMY_MISSILE = "enemy_missile";
+    public static final String SEA_BOSS = "air_balloon";
+    public static final String SEA_BOSS_MISSILE = "boss_missile";
+
 
     // Dialog Atlas
     public static final String DIALOG_BACKGROUND = "bar";

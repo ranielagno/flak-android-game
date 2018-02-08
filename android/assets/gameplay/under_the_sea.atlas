@@ -1,54 +1,40 @@
 
-sea.png
+under_the_sea.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-background_sea
+background_under_the_sea
   rotate: false
   xy: 1, 1
   size: 720, 1280
   orig: 720, 1280
   offset: 0, 0
   index: -1
-vehicle_ship
+submarine
   rotate: false
   xy: 723, 1110
   size: 241, 171
   orig: 241, 171
   offset: 0, 0
   index: -1
-cannon_ship
+boss_cannon
   rotate: false
   xy: 723, 841
   size: 78, 267
   orig: 78, 267
   offset: 0, 0
   index: -1
-air_plane
+dynamite
+  rotate: false
+  xy: 723, 767
+  size: 63, 72
+  orig: 63, 72
+  offset: 0, 0
+  index: -1
+cannon_ship
   rotate: false
   xy: 803, 1029
-  size: 156, 79
-  orig: 156, 79
-  offset: 0, 0
-  index: -1
-air_balloon
-  rotate: false
-  xy: 723, 715
-  size: 206, 124
-  orig: 206, 124
-  offset: 0, 0
-  index: -1
-enemy_missile
-  rotate: false
-  xy: 723, 618
-  size: 40, 95
-  orig: 40, 95
-  offset: 0, 0
-  index: -1
-boss_missile
-  rotate: false
-  xy: 803, 934
-  size: 35, 93
-  orig: 35, 93
+  size: 32, 79
+  orig: 32, 79
   offset: 0, 0
   index: -1

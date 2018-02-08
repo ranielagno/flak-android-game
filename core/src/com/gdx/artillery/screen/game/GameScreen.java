@@ -64,14 +64,17 @@ public class GameScreen extends ScreenAdapter {
     @Override
     public void render(float delta) {
 
-        vehicleInputController.update(delta);
-        cannonInputController.update(delta);
-        controller.update(delta);
-        renderer.render(delta);
-
         if (gameWorld.getGameState().isMenu()) {
             game.setScreen(new MenuScreen(game));
         }
+
+        if (gameWorld.getGameState().isPlaying()) {
+            vehicleInputController.update(delta);
+            cannonInputController.update(delta);
+        }
+        controller.update(delta);
+        renderer.render(delta);
+
     }
 
     @Override

@@ -1,8 +1,5 @@
 package com.gdx.artillery.assets;
 
-/**
- * Created by goran on 4/10/2016.
- */
 
 public class AssetPaths {
 

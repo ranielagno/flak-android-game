@@ -1,6 +1,5 @@
 package com.gdx.artillery.entity;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
@@ -13,6 +12,7 @@ import com.gdx.artillery.config.GameConfig;
 public class EntityFactory {
 
     private Pool<ArtilleryBullet> bulletPool;
+    private Pool<EnemyVehicle> enemyVehiclePool;
 
     public EntityFactory() {
         init();
@@ -21,6 +21,7 @@ public class EntityFactory {
     private void init() {
         // create bullet pool
         bulletPool = Pools.get(ArtilleryBullet.class, 40);
+        enemyVehiclePool = Pools.get(EnemyVehicle.class, 7);
 
     }
 
@@ -51,19 +52,23 @@ public class EntityFactory {
         return bullet;
     }
 
-    public EnemyAircraft createEnemyChopper() {
+    public EnemyVehicle createEnemyVehicle(float x, float y, boolean isVehicleFromLeft, int speed) {
 
-        EnemyAircraft chopper = new EnemyAircraft("chopper");
+        EnemyVehicle enemyVehicle = enemyVehiclePool.obtain();
+        enemyVehicle.setPosition(x, y);
+        enemyVehicle.setSize(GameConfig.ENEMY_CHOPPER_WIDTH, GameConfig.ENEMY_CHOPPER_HEIGHT);
+        enemyVehicle.setVehicleFromLeft(isVehicleFromLeft);
+        enemyVehicle.setSpeed(speed);
 
-        float x = MathUtils.random(0, GameConfig.WORLD_WIDTH - chopper.getWidth());
-        float y = MathUtils.random(GameConfig.WORLD_CENTER_Y, GameConfig.WORLD_HEIGHT - chopper.getHeight());
-
-        chopper.setPosition(x, y);
-        return chopper;
+        return enemyVehicle;
     }
 
-    public void freePickup(ArtilleryBullet bullet) {
+    public void freeBullet(ArtilleryBullet bullet) {
         bulletPool.free(bullet);
+    }
+
+    public void freeEnemyVehicle(EnemyVehicle enemyVehicle) {
+        enemyVehiclePool.free(enemyVehicle);
     }
 
 }

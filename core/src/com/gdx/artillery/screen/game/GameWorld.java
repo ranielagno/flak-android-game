@@ -13,12 +13,11 @@ import com.gdx.artillery.entity.ArtilleryBullet;
 import com.gdx.artillery.entity.ArtilleryCannon;
 import com.gdx.artillery.entity.ArtilleryVehicle;
 import com.gdx.artillery.entity.Background;
-import com.gdx.artillery.entity.EnemyAircraft;
+import com.gdx.artillery.entity.EnemyVehicle;
 import com.gdx.artillery.entity.EntityFactory;
 import com.gdx.artillery.screen.dialog.OverlayCallback;
 
 import java.text.DecimalFormat;
-import java.util.logging.Level;
 
 /**
  * Created by Raniel Agno on 12/28/2017.
@@ -38,9 +37,10 @@ public class GameWorld {
     private Background background;
     private ArtilleryCannon cannon;
 
-    private EnemyAircraft chopper;
+    // private EnemyVehicle enemyVehicle;
 
     private Array<ArtilleryBullet> bullets = new Array<ArtilleryBullet>();
+    private Array<EnemyVehicle> enemies = new Array<EnemyVehicle>();
 
     private float reloadTime;
     private float gameTimer;
@@ -101,12 +101,9 @@ public class GameWorld {
         // create cannon
         cannon = factory.createCannon("tank", vehicle.getX() + GameConfig.CANNON_SCALE_X, GameConfig.CANNON_Y);
 
-        // create enemy chopper
-        chopper = factory.createEnemyChopper();
-
         scoreController.reset();
 
-        resetGameTimer();
+        resetGameWorld();
 
     }
 
@@ -114,57 +111,92 @@ public class GameWorld {
 
         reloadTime += delta;
 
-        if (reloadTime >= GameConfig.RELOAD_TIME) {
+        if (reloadTime >= GameConfig.RELOAD_TIME && !gameState.isGameOver()) {
             spawnBullet(cannon);
             reloadTime = 0;
         }
 
-        if (isGameTimerFinished() && !gameState.isGameOver() && !gameState.isMenu()) {
+        if (isGameTimerFinished() && !gameState.isGameOver()) {
             gameState = GameState.GAME_OVER;
+            clearGameWorld();
         }
 
-        updateGameTimer(delta);
-        updateBullets(delta);
-        checkEnemyHit();
+        if (gameState.isPlaying()) {
+            updateGameTimer(delta);
+            updateBullets(delta);
+            updateEnemies(delta);
+            checkEnemyHit();
+        }
 
     }
 
     // == private methods ==
-    private void spawnEnemy() {
+    private void spawnEnemyWave() {
 
-        float x = MathUtils.random(0, GameConfig.WORLD_WIDTH - chopper.getWidth());
-        float y = MathUtils.random(GameConfig.WORLD_CENTER_Y, GameConfig.WORLD_HEIGHT - chopper.getHeight());
+        int randomNumberOfEnemy = 0;
 
-        chopper.setPosition(x, y);
-        chopper.setEnemyAlive(true);
+        if (currentLevel == LevelState.Level1) {
+            randomNumberOfEnemy = MathUtils.random(1, 3);
+        } else if (currentLevel == LevelState.Level2) {
+            randomNumberOfEnemy = MathUtils.random(3, 5);
+        } else if (currentLevel == LevelState.Level3) {
+            randomNumberOfEnemy = MathUtils.random(5, 7);
+        }
+
+        // random speed
+        // random position y value
+        // random initial position x value
+
+        for (int i = 0; i < randomNumberOfEnemy; i++) {
+
+            boolean isVehicleFromLeft = MathUtils.randomBoolean();
+            int speed = MathUtils.random(1, 5);
+
+            float x = 0f;
+            float y = MathUtils.random(GameConfig.WORLD_CENTER_Y, GameConfig.WORLD_HEIGHT - GameConfig.ENEMY_CHOPPER_HEIGHT);
+
+            if (isVehicleFromLeft) {
+                x -= GameConfig.ENEMY_CHOPPER_WIDTH;
+            } else {
+                x = GameConfig.WORLD_WIDTH;
+            }
+
+            EnemyVehicle enemy = factory.createEnemyVehicle(x, y, isVehicleFromLeft, speed);
+            enemies.add(enemy);
+
+        }
 
     }
 
     private void checkEnemyHit() {
 
-        Rectangle enemyBounds = chopper.getBounds();
+        for (int i = 0; i < enemies.size; i++) {
 
-        for (int i = 0; i < bullets.size; i++) {
+            EnemyVehicle enemyVehicle = enemies.get(i);
+            Rectangle enemyBounds = enemyVehicle.getBounds();
 
-            ArtilleryBullet bullet = bullets.get(i);
+            for (int j = 0; j < bullets.size; j++) {
 
-            if (Intersector.overlaps(bullet.getBounds(), enemyBounds)) {
+                ArtilleryBullet bullet = bullets.get(j);
 
-                chopper.setEnemyAlive(false);
-                factory.freePickup(bullet);
-                bullets.removeIndex(i);
+                if (Intersector.overlaps(bullet.getBounds(), enemyBounds)) {
 
-                scoreController.addScore(GameConfig.HIT_ENEMY_SCORE);
+                    factory.freeBullet(bullet);
+                    factory.freeEnemyVehicle(enemyVehicle);
 
-                break;
+                    enemyVehicle.setEnemyAlive(false);
+                    enemies.removeIndex(i);
+                    bullets.removeIndex(j);
+
+                    scoreController.addScore(GameConfig.HIT_ENEMY_SCORE);
+
+                    break;
+
+                }
 
             }
+
         }
-
-        if (!chopper.isEnemyAlive())
-            spawnEnemy();
-
-
     }
 
     private void spawnBullet(ArtilleryCannon cannon) {
@@ -189,10 +221,38 @@ public class GameWorld {
             if (bullet.getX() + GameConfig.CANNON_BALL_SIZE < 0 ||
                     bullet.getX() > GameConfig.WORLD_WIDTH ||
                     bullet.getY() > GameConfig.WORLD_HEIGHT) {
-                factory.freePickup(bullet);
-
+                factory.freeBullet(bullet);
                 bullets.removeIndex(i);
             }
+        }
+
+    }
+
+    private void updateEnemies(float delta) {
+
+        if (enemies.size == 0) {
+            spawnEnemyWave();
+        }
+
+        for (int i = 0; i < enemies.size; i++) {
+            EnemyVehicle enemy = enemies.get(i);
+            enemy.update(delta);
+
+            if (enemy.isVehicleFromLeft()) {
+
+                if (enemy.getX() > GameConfig.WORLD_WIDTH) {
+                    factory.freeEnemyVehicle(enemy);
+                    enemies.removeIndex(i);
+                }
+
+            } else {
+
+                if ((enemy.getX() + enemy.getWidth()) < 0) {
+                    factory.freeEnemyVehicle(enemy);
+                    enemies.removeIndex(i);
+                }
+            }
+
         }
 
     }
@@ -215,14 +275,33 @@ public class GameWorld {
 
     }
 
+    private void clearGameWorld() {
+
+        for (int i = 0; i < enemies.size; i++) {
+
+            EnemyVehicle enemy= enemies.get(i);
+            factory.freeEnemyVehicle(enemy);
+            enemies.removeIndex(i);
+        }
+
+        for (int i = 0; i < bullets.size; i++) {
+
+            ArtilleryBullet bullet = bullets.get(i);
+            factory.freeBullet(bullet);
+            bullets.removeIndex(i);
+        }
+    }
+
     // == public methods
 
     public boolean isGameTimerFinished() {
         return gameTimer <= 0;
     }
 
-    public void resetGameTimer() {
+    public void resetGameWorld() {
         this.gameTimer = GameConfig.GAME_TIMER_MINUTE * 60f;
+        vehicle.setPosition(GameConfig.VEHICLE_TANK_X, GameConfig.VEHICLE_TANK_Y);
+        cannon.setRotation(0);
     }
 
     public Background getBackground() {
@@ -241,8 +320,8 @@ public class GameWorld {
         return bullets;
     }
 
-    public EnemyAircraft getChopper() {
-        return chopper;
+    public Array<EnemyVehicle> getEnemies() {
+        return enemies;
     }
 
     public String getScoreString() {
@@ -253,7 +332,9 @@ public class GameWorld {
         return gameTimeString;
     }
 
-    public GameState getGameState() { return gameState; }
+    public GameState getGameState() {
+        return gameState;
+    }
 
     public OverlayCallback getOverlayCallback() {
         return callback;
@@ -273,7 +354,7 @@ public class GameWorld {
             renderer.initializeLevel2();
         }
 
-        resetGameTimer();
+        resetGameWorld();
 
     }
 }

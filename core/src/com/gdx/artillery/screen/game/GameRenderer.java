@@ -24,10 +24,10 @@ import com.gdx.artillery.entity.ArtilleryBullet;
 import com.gdx.artillery.entity.ArtilleryCannon;
 import com.gdx.artillery.entity.ArtilleryVehicle;
 import com.gdx.artillery.entity.Background;
-import com.gdx.artillery.entity.EnemyAircraft;
+import com.gdx.artillery.entity.EnemyVehicle;
 import com.gdx.artillery.screen.dialog.DialogOverlay;
-import com.gdx.artillery.screen.dialog.OverlayCallback;
 import com.jga.util.GdxUtils;
+import com.sun.org.apache.regexp.internal.RE;
 
 /**
  * Created by Raniel Agno on 12/28/2017.
@@ -53,6 +53,9 @@ public class GameRenderer implements Disposable {
     private TextureRegion cannonRegion;
     private TextureRegion bulletRegion;
     private TextureRegion enemyRegion;
+    private TextureRegion enemyMissileRegion;
+    private TextureRegion bossRegion;
+    private TextureRegion bossMissileRegion;
 
     private BitmapFont font;
 
@@ -98,7 +101,10 @@ public class GameRenderer implements Disposable {
         cannonRegion = level1Atlas.findRegion(RegionNames.LAND_CANNON);
         vehicleRegion = level1Atlas.findRegion(RegionNames.LAND_VEHICLE);
         bulletRegion = level1Atlas.findRegion(RegionNames.LAND_BULLET);
-        enemyRegion = level1Atlas.findRegion(RegionNames.ENEMY_CHOPPER);
+        enemyRegion = level1Atlas.findRegion(RegionNames.LAND_ENEMY_VEHICLE);
+        enemyMissileRegion = level1Atlas.findRegion(RegionNames.LAND_ENEMY_MISSILE);
+        bossRegion = level1Atlas.findRegion(RegionNames.LAND_BOSS);;
+        bossMissileRegion = level1Atlas.findRegion(RegionNames.LAND_BOSS_MISSILE);
     }
 
     public void initializeLevel2() {
@@ -106,7 +112,10 @@ public class GameRenderer implements Disposable {
         cannonRegion = level2Atlas.findRegion(RegionNames.SEA_CANNON);
         vehicleRegion = level2Atlas.findRegion(RegionNames.SEA_VEHICLE);
         bulletRegion = level1Atlas.findRegion(RegionNames.LAND_BULLET);
-        enemyRegion = level2Atlas.findRegion(RegionNames.ENEMY_BALLOON);
+        enemyRegion = level2Atlas.findRegion(RegionNames.SEA_ENEMY_VEHICLE);
+        enemyMissileRegion = level2Atlas.findRegion(RegionNames.SEA_ENEMY_MISSILE);
+        bossRegion = level2Atlas.findRegion(RegionNames.SEA_BOSS);;
+        bossMissileRegion = level2Atlas.findRegion(RegionNames.SEA_BOSS_MISSILE);
     }
 
     public void render(float delta) {
@@ -145,7 +154,7 @@ public class GameRenderer implements Disposable {
         ArtilleryVehicle vehicle = gameWorld.getVehicle();
         ArtilleryCannon cannon = gameWorld.getCannon();
         Array<ArtilleryBullet> bullets = gameWorld.getBullets();
-        EnemyAircraft chopper = gameWorld.getChopper();
+        Array<EnemyVehicle> enemies = gameWorld.getEnemies();
 
         batch.draw(backgroundRegion,
                 background.getX(), background.getY(),
@@ -182,9 +191,18 @@ public class GameRenderer implements Disposable {
         );
         */
 
-        batch.draw(enemyRegion,
-                chopper.getX(), chopper.getY(),
-                chopper.getWidth(), chopper.getHeight());
+        for (int i = 0; i < enemies.size; i++) {
+
+            EnemyVehicle enemy = enemies.get(i);
+            float width = enemy.getWidth();
+            float x = enemy.isVehicleFromLeft()? enemy.getX(): enemy.getX() + width;
+            width = enemy.isVehicleFromLeft()? width: -width;
+            batch.draw(enemyRegion,
+                    x, enemy.getY(),
+                    width, enemy.getHeight()
+                    );
+
+        }
 
         batch.draw(vehicleRegion,
                 vehicle.getX(), vehicle.getY(),
