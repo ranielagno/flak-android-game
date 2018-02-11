@@ -10,6 +10,7 @@ import com.gdx.artillery.config.GameConfig;
 public class EnemyBullet extends EntityBase implements Pool.Poolable {
 
     private float rotation = 0f;
+    private boolean showBullet;
 
     public EnemyBullet() {
 
@@ -19,7 +20,7 @@ public class EnemyBullet extends EntityBase implements Pool.Poolable {
 
     public void update(float delta) {
 
-        y -= GameConfig.ENEMY_BULLET_SPEED * delta;
+        y -= delta * GameConfig.ENEMY_BULLET_SPEED;
 
         updateBounds();
     }

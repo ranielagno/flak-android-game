@@ -51,14 +51,14 @@ public class GameConfig {
 
     public static final float RELOAD_TIME = 1f;
 
-    public static final float ENEMY_BULLET_WIDTH = 1f;
-    public static final float ENEMY_BULLET_HEIGHT = 2.7f;
-    public static final float ENEMY_BULLET_SPEED = 3f;
+    public static final float ENEMY_BULLET_HEIGHT = ENEMY_VEHICLE_HEIGHT / 1.5f;
+    public static final float ENEMY_BULLET_WIDTH = (ENEMY_BULLET_HEIGHT * 33f) / 89f;
+    public static final float ENEMY_BULLET_SPEED = 6f;
 
     // 240w / 171h = 4 / x vehicle
     // 267h / 78w = 2.5f / x cannon
     // 181w / 131h = 3.7 / x chopper
-
+    // 33 w / 89 h = X / height
     // == constructors ==
     private GameConfig() {}
 

@@ -19,7 +19,6 @@ import com.gdx.artillery.entity.EntityFactory;
 import com.gdx.artillery.screen.dialog.OverlayCallback;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 
 /**
  * Created by Raniel Agno on 12/28/2017.
@@ -113,7 +112,7 @@ public class GameWorld {
         reloadTime += delta;
 
         if (reloadTime >= GameConfig.RELOAD_TIME && !gameState.isGameOver()) {
-            //spawnBullet(cannon);
+            spawnBullet(cannon);
             reloadTime = 0;
         }
 
@@ -154,17 +153,18 @@ public class GameWorld {
             boolean isVehicleFromLeft = MathUtils.randomBoolean();
 
             // Todo: Vary speed depend on level
-            int speed = MathUtils.random(2, 5);
+            int speed = MathUtils.random(4, 6);
 
             float enemyVehicleX = 0f;
-            float enemyVehicleY = MathUtils.random(GameConfig.WORLD_CENTER_Y, GameConfig.WORLD_HEIGHT - GameConfig.ENEMY_VEHICLE_HEIGHT);
+            float enemyVehicleY = MathUtils.random(GameConfig.WORLD_CENTER_Y,
+                    GameConfig.WORLD_HEIGHT - GameConfig.ENEMY_VEHICLE_HEIGHT);
 
             // Todo: Vary enemy bullet launching spot depend on level
             float startRange = GameConfig.ENEMY_VEHICLE_HALF_WIDTH;
             float endRange = GameConfig.WORLD_WIDTH - GameConfig.ENEMY_VEHICLE_HALF_WIDTH;
 
             float enemyBulletX = MathUtils.random(startRange, endRange);
-            float enemyBulletY = enemyVehicleY + GameConfig.ENEMY_BULLET_HEIGHT;
+            float enemyBulletY = enemyVehicleY - (GameConfig.ENEMY_BULLET_HEIGHT / 2 + 0.5f);
 
             if (isVehicleFromLeft) {
                 enemyVehicleX -= GameConfig.ENEMY_VEHICLE_WIDTH;
@@ -173,9 +173,9 @@ public class GameWorld {
             }
 
             EnemyVehicle enemy = factory.createEnemyVehicle(enemyVehicleX, enemyVehicleY, isVehicleFromLeft, speed);
-
             EnemyBullet enemyBullet = factory.createEnemyBullet(enemyBulletX, enemyBulletY);
             enemy.addAmmo(enemyBullet);
+
             enemies.add(enemy);
 
         }
@@ -239,7 +239,6 @@ public class GameWorld {
                 bullets.removeIndex(i);
             }
         }
-
     }
 
     private void updateEnemies(float delta) {
@@ -250,8 +249,9 @@ public class GameWorld {
 
         for (int i = 0; i < enemies.size; i++) {
             EnemyVehicle enemy = enemies.get(i);
-            spawnEnemyBullet(enemy);
             enemy.update(delta);
+
+            spawnEnemyBullet(enemy);
 
             if (enemy.isVehicleFromLeft()) {
 
@@ -266,6 +266,7 @@ public class GameWorld {
                     factory.freeEnemyVehicle(enemy);
                     enemies.removeIndex(i);
                 }
+
             }
 
         }
@@ -273,33 +274,38 @@ public class GameWorld {
     }
 
     private void spawnEnemyBullet(EnemyVehicle enemyVehicle) {
-        ArrayList<EnemyBullet> enemyVehicleAmmo = enemyVehicle.getAmmo();
-        //LOGGER.debug("Spawn enemy bullet ammo size" + enemyVehicleAmmo.size());
 
-        for (int i = 0; i < enemyVehicleAmmo.size(); i++) {
-            EnemyBullet enemyBullet = enemyVehicleAmmo.get(i);
-            LOGGER.debug("enemy bullet (" + i + ") " + enemyVehicle.getX() + GameConfig.ENEMY_VEHICLE_HALF_WIDTH +
-                    " == " + enemyBullet.getX());
-            if (enemyVehicle.isVehicleFromLeft() &&
-                    ((enemyVehicle.getX() + GameConfig.ENEMY_VEHICLE_HALF_WIDTH) >= enemyBullet.getX())) {
-                enemyBullets.add(enemyBullet);
-            } else if ((enemyVehicle.getX() + GameConfig.ENEMY_VEHICLE_HALF_WIDTH) <= enemyBullet.getX()) {
-               // enemyBullets.add(enemyBullet);
+        Array<EnemyBullet> ammo = enemyVehicle.getAmmo();
+
+        for (EnemyBullet enemyBullet : ammo) {
+            if (!enemyBullets.contains(enemyBullet, true) && !enemyBullets.contains(enemyBullet, false)) {
+                if (enemyVehicle.isVehicleFromLeft() &&
+                        ((enemyVehicle.getX() + GameConfig.ENEMY_VEHICLE_HALF_WIDTH) >= enemyBullet.getX())) {
+                    enemyBullets.add(enemyBullet);
+                    //LOGGER.debug("Spawn bullet from left");
+                } else if (!enemyVehicle.isVehicleFromLeft() &&
+                        (enemyVehicle.getX() + GameConfig.ENEMY_VEHICLE_HALF_WIDTH) <= enemyBullet.getX()) {
+                    enemyBullets.add(enemyBullet);
+                    //LOGGER.debug("Spawn bullet from right");
+                }
             }
         }
 
     }
 
-    public void updateEnemyBullets(float delta) {
+    private void updateEnemyBullets(float delta) {
+
+        LOGGER.debug(String.valueOf(enemyBullets.size));
 
         for (int i = 0; i < enemyBullets.size; i++) {
             EnemyBullet enemyBullet = enemyBullets.get(i);
             enemyBullet.update(delta);
 
-            if (enemyBullet.getY() < -GameConfig.ENEMY_BULLET_HEIGHT) {
+            if (enemyBullet.getY() < vehicle.getY()) {
                 factory.freeEnemyBullet(enemyBullet);
                 enemyBullets.removeIndex(i);
             }
+
         }
 
     }
@@ -326,7 +332,8 @@ public class GameWorld {
 
         for (int i = 0; i < enemies.size; i++) {
 
-            EnemyVehicle enemy= enemies.get(i);
+            EnemyVehicle enemy = enemies.get(i);
+            enemy.clearAmmo();
             factory.freeEnemyVehicle(enemy);
             enemies.removeIndex(i);
         }
@@ -336,6 +343,13 @@ public class GameWorld {
             ArtilleryBullet bullet = bullets.get(i);
             factory.freeBullet(bullet);
             bullets.removeIndex(i);
+        }
+
+        for (int i = 0; i < enemyBullets.size; i++) {
+
+            EnemyBullet bullet = enemyBullets.get(i);
+            factory.freeEnemyBullet(bullet);
+            enemyBullets.removeIndex(i);
         }
     }
 

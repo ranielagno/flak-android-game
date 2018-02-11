@@ -1,25 +1,21 @@
 package com.gdx.artillery.entity;
 
-import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
-import com.gdx.artillery.config.GameConfig;
-
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 
 /**
  * Created by Raniel Agno on 12/28/2017.
  */
 
-public class EnemyVehicle extends EntityBase implements Pool.Poolable{
+public class EnemyVehicle extends EntityBase implements Pool.Poolable {
 
     private boolean enemyAlive = true;
     private boolean vehicleFromLeft;
     private int speed;
-    private ArrayList<EnemyBullet> ammo;
+    private Array<EnemyBullet> ammo = new Array<EnemyBullet>();
 
     public EnemyVehicle() {
-        ammo = new ArrayList<EnemyBullet>();
+
     }
 
     public void update(float delta) {
@@ -57,13 +53,16 @@ public class EnemyVehicle extends EntityBase implements Pool.Poolable{
         ammo.add(enemyBullet);
     }
 
-    public ArrayList<EnemyBullet> getAmmo() {
+    public Array<EnemyBullet> getAmmo() {
         return ammo;
+    }
+
+    public void clearAmmo() {
+        ammo.clear();
     }
 
     @Override
     public void reset() {
 
-        ammo.clear();
     }
 }
