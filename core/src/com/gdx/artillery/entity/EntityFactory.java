@@ -13,6 +13,7 @@ public class EntityFactory {
 
     private Pool<ArtilleryBullet> bulletPool;
     private Pool<EnemyVehicle> enemyVehiclePool;
+    private Pool<EnemyBullet> enemyBulletPool;
 
     public EntityFactory() {
         init();
@@ -22,6 +23,7 @@ public class EntityFactory {
         // create bullet pool
         bulletPool = Pools.get(ArtilleryBullet.class, 40);
         enemyVehiclePool = Pools.get(EnemyVehicle.class, 7);
+        enemyBulletPool = Pools.get(EnemyBullet.class, 40);
 
     }
 
@@ -56,11 +58,18 @@ public class EntityFactory {
 
         EnemyVehicle enemyVehicle = enemyVehiclePool.obtain();
         enemyVehicle.setPosition(x, y);
-        enemyVehicle.setSize(GameConfig.ENEMY_CHOPPER_WIDTH, GameConfig.ENEMY_CHOPPER_HEIGHT);
+        enemyVehicle.setSize(GameConfig.ENEMY_VEHICLE_WIDTH, GameConfig.ENEMY_VEHICLE_HEIGHT);
         enemyVehicle.setVehicleFromLeft(isVehicleFromLeft);
         enemyVehicle.setSpeed(speed);
 
         return enemyVehicle;
+    }
+
+    public EnemyBullet createEnemyBullet(float x, float y) {
+
+        EnemyBullet bullet = enemyBulletPool.obtain();
+        bullet.setPosition(x, y);
+        return bullet;
     }
 
     public void freeBullet(ArtilleryBullet bullet) {
@@ -69,6 +78,10 @@ public class EntityFactory {
 
     public void freeEnemyVehicle(EnemyVehicle enemyVehicle) {
         enemyVehiclePool.free(enemyVehicle);
+    }
+
+    public void freeEnemyBullet(EnemyBullet enemyBullet) {
+        enemyBulletPool.free(enemyBullet);
     }
 
 }

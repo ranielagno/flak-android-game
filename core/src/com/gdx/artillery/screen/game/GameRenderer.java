@@ -24,6 +24,7 @@ import com.gdx.artillery.entity.ArtilleryBullet;
 import com.gdx.artillery.entity.ArtilleryCannon;
 import com.gdx.artillery.entity.ArtilleryVehicle;
 import com.gdx.artillery.entity.Background;
+import com.gdx.artillery.entity.EnemyBullet;
 import com.gdx.artillery.entity.EnemyVehicle;
 import com.gdx.artillery.screen.dialog.DialogOverlay;
 import com.jga.util.GdxUtils;
@@ -155,6 +156,7 @@ public class GameRenderer implements Disposable {
         ArtilleryCannon cannon = gameWorld.getCannon();
         Array<ArtilleryBullet> bullets = gameWorld.getBullets();
         Array<EnemyVehicle> enemies = gameWorld.getEnemies();
+        Array<EnemyBullet> enemyBullets = gameWorld.getEnemyBullets();
 
         batch.draw(backgroundRegion,
                 background.getX(), background.getY(),
@@ -203,6 +205,17 @@ public class GameRenderer implements Disposable {
                     );
 
         }
+
+        for (int i = 0; i < enemyBullets.size; i++) {
+
+            EnemyBullet bullet = enemyBullets.get(i);
+
+            batch.draw(enemyMissileRegion,
+                    bullet.getX(), bullet.getY(),
+                    bullet.getWidth(), bullet.getHeight());
+
+        }
+
 
         batch.draw(vehicleRegion,
                 vehicle.getX(), vehicle.getY(),

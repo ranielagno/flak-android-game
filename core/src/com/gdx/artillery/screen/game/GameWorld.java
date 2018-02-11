@@ -13,11 +13,13 @@ import com.gdx.artillery.entity.ArtilleryBullet;
 import com.gdx.artillery.entity.ArtilleryCannon;
 import com.gdx.artillery.entity.ArtilleryVehicle;
 import com.gdx.artillery.entity.Background;
+import com.gdx.artillery.entity.EnemyBullet;
 import com.gdx.artillery.entity.EnemyVehicle;
 import com.gdx.artillery.entity.EntityFactory;
 import com.gdx.artillery.screen.dialog.OverlayCallback;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 
 /**
  * Created by Raniel Agno on 12/28/2017.
@@ -37,10 +39,9 @@ public class GameWorld {
     private Background background;
     private ArtilleryCannon cannon;
 
-    // private EnemyVehicle enemyVehicle;
-
     private Array<ArtilleryBullet> bullets = new Array<ArtilleryBullet>();
     private Array<EnemyVehicle> enemies = new Array<EnemyVehicle>();
+    private Array<EnemyBullet> enemyBullets = new Array<EnemyBullet>();
 
     private float reloadTime;
     private float gameTimer;
@@ -112,7 +113,7 @@ public class GameWorld {
         reloadTime += delta;
 
         if (reloadTime >= GameConfig.RELOAD_TIME && !gameState.isGameOver()) {
-            spawnBullet(cannon);
+            //spawnBullet(cannon);
             reloadTime = 0;
         }
 
@@ -125,6 +126,7 @@ public class GameWorld {
             updateGameTimer(delta);
             updateBullets(delta);
             updateEnemies(delta);
+            updateEnemyBullets(delta);
             checkEnemyHit();
         }
 
@@ -136,7 +138,7 @@ public class GameWorld {
         int randomNumberOfEnemy = 0;
 
         if (currentLevel == LevelState.Level1) {
-            randomNumberOfEnemy = MathUtils.random(1, 3);
+            randomNumberOfEnemy = 1;
         } else if (currentLevel == LevelState.Level2) {
             randomNumberOfEnemy = MathUtils.random(3, 5);
         } else if (currentLevel == LevelState.Level3) {
@@ -150,18 +152,30 @@ public class GameWorld {
         for (int i = 0; i < randomNumberOfEnemy; i++) {
 
             boolean isVehicleFromLeft = MathUtils.randomBoolean();
-            int speed = MathUtils.random(1, 5);
 
-            float x = 0f;
-            float y = MathUtils.random(GameConfig.WORLD_CENTER_Y, GameConfig.WORLD_HEIGHT - GameConfig.ENEMY_CHOPPER_HEIGHT);
+            // Todo: Vary speed depend on level
+            int speed = MathUtils.random(2, 5);
+
+            float enemyVehicleX = 0f;
+            float enemyVehicleY = MathUtils.random(GameConfig.WORLD_CENTER_Y, GameConfig.WORLD_HEIGHT - GameConfig.ENEMY_VEHICLE_HEIGHT);
+
+            // Todo: Vary enemy bullet launching spot depend on level
+            float startRange = GameConfig.ENEMY_VEHICLE_HALF_WIDTH;
+            float endRange = GameConfig.WORLD_WIDTH - GameConfig.ENEMY_VEHICLE_HALF_WIDTH;
+
+            float enemyBulletX = MathUtils.random(startRange, endRange);
+            float enemyBulletY = enemyVehicleY + GameConfig.ENEMY_BULLET_HEIGHT;
 
             if (isVehicleFromLeft) {
-                x -= GameConfig.ENEMY_CHOPPER_WIDTH;
+                enemyVehicleX -= GameConfig.ENEMY_VEHICLE_WIDTH;
             } else {
-                x = GameConfig.WORLD_WIDTH;
+                enemyVehicleX = GameConfig.WORLD_WIDTH;
             }
 
-            EnemyVehicle enemy = factory.createEnemyVehicle(x, y, isVehicleFromLeft, speed);
+            EnemyVehicle enemy = factory.createEnemyVehicle(enemyVehicleX, enemyVehicleY, isVehicleFromLeft, speed);
+
+            EnemyBullet enemyBullet = factory.createEnemyBullet(enemyBulletX, enemyBulletY);
+            enemy.addAmmo(enemyBullet);
             enemies.add(enemy);
 
         }
@@ -236,6 +250,7 @@ public class GameWorld {
 
         for (int i = 0; i < enemies.size; i++) {
             EnemyVehicle enemy = enemies.get(i);
+            spawnEnemyBullet(enemy);
             enemy.update(delta);
 
             if (enemy.isVehicleFromLeft()) {
@@ -253,6 +268,38 @@ public class GameWorld {
                 }
             }
 
+        }
+
+    }
+
+    private void spawnEnemyBullet(EnemyVehicle enemyVehicle) {
+        ArrayList<EnemyBullet> enemyVehicleAmmo = enemyVehicle.getAmmo();
+        //LOGGER.debug("Spawn enemy bullet ammo size" + enemyVehicleAmmo.size());
+
+        for (int i = 0; i < enemyVehicleAmmo.size(); i++) {
+            EnemyBullet enemyBullet = enemyVehicleAmmo.get(i);
+            LOGGER.debug("enemy bullet (" + i + ") " + enemyVehicle.getX() + GameConfig.ENEMY_VEHICLE_HALF_WIDTH +
+                    " == " + enemyBullet.getX());
+            if (enemyVehicle.isVehicleFromLeft() &&
+                    ((enemyVehicle.getX() + GameConfig.ENEMY_VEHICLE_HALF_WIDTH) >= enemyBullet.getX())) {
+                enemyBullets.add(enemyBullet);
+            } else if ((enemyVehicle.getX() + GameConfig.ENEMY_VEHICLE_HALF_WIDTH) <= enemyBullet.getX()) {
+               // enemyBullets.add(enemyBullet);
+            }
+        }
+
+    }
+
+    public void updateEnemyBullets(float delta) {
+
+        for (int i = 0; i < enemyBullets.size; i++) {
+            EnemyBullet enemyBullet = enemyBullets.get(i);
+            enemyBullet.update(delta);
+
+            if (enemyBullet.getY() < -GameConfig.ENEMY_BULLET_HEIGHT) {
+                factory.freeEnemyBullet(enemyBullet);
+                enemyBullets.removeIndex(i);
+            }
         }
 
     }
@@ -322,6 +369,10 @@ public class GameWorld {
 
     public Array<EnemyVehicle> getEnemies() {
         return enemies;
+    }
+
+    public Array<EnemyBullet> getEnemyBullets() {
+        return enemyBullets;
     }
 
     public String getScoreString() {

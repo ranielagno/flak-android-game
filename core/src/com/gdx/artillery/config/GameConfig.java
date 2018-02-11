@@ -41,14 +41,19 @@ public class GameConfig {
     public static final float CANNON_BALL_SIZE = CANNON_WIDTH - 0.2f; // - 0.8f
     public static final float CANNON_BALL_SPEED = 12f;
 
-    public static final float ENEMY_CHOPPER_WIDTH = 3.7f;
-    public static final float ENEMY_CHOPPER_HEIGHT = 2.68f;
+    public static final float ENEMY_VEHICLE_WIDTH = 3.7f;
+    public static final float ENEMY_VEHICLE_HEIGHT = 2.68f;
+    public static final float ENEMY_VEHICLE_HALF_WIDTH = ENEMY_VEHICLE_WIDTH / 2f;
 
     public static final int HIT_ENEMY_SCORE = 10;
 
     public static final float GAME_TIMER_MINUTE = 1f;
 
-    public static final float RELOAD_TIME = 2f;
+    public static final float RELOAD_TIME = 1f;
+
+    public static final float ENEMY_BULLET_WIDTH = 1f;
+    public static final float ENEMY_BULLET_HEIGHT = 2.7f;
+    public static final float ENEMY_BULLET_SPEED = 3f;
 
     // 240w / 171h = 4 / x vehicle
     // 267h / 78w = 2.5f / x cannon
