@@ -1,5 +1,7 @@
 package com.gdx.artillery.screen.game;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
@@ -17,6 +19,7 @@ import com.gdx.artillery.entity.EnemyBullet;
 import com.gdx.artillery.entity.EnemyVehicle;
 import com.gdx.artillery.entity.EntityFactory;
 import com.gdx.artillery.screen.dialog.OverlayCallback;
+import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 
 import java.text.DecimalFormat;
 
@@ -113,6 +116,8 @@ public class GameWorld {
 
         scoreController.reset();
 
+        Gdx.input.setCatchBackKey(true);
+
         resetGameWorld();
 
     }
@@ -142,6 +147,10 @@ public class GameWorld {
             checkEnemyHit();
             checkVehicleHit();
             checkMissilesHit();
+        }
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.BACK)) {
+            gameState = GameState.PAUSED;
         }
 
     }

@@ -21,8 +21,11 @@ public class AssetDescriptors {
     public static final AssetDescriptor<TextureAtlas> MENU =
             new AssetDescriptor<TextureAtlas>(AssetPaths.MENU, TextureAtlas.class);
 
-     public static final AssetDescriptor<TextureAtlas> DIALOG =
-            new AssetDescriptor<TextureAtlas>(AssetPaths.DIALOG, TextureAtlas.class);
+     public static final AssetDescriptor<TextureAtlas> HUD =
+            new AssetDescriptor<TextureAtlas>(AssetPaths.HUD, TextureAtlas.class);
+
+    public static final AssetDescriptor<TextureAtlas> LOGO =
+            new AssetDescriptor<TextureAtlas>(AssetPaths.LOGO, TextureAtlas.class);
 
     public static final AssetDescriptor<Skin> SKIN =
             new AssetDescriptor<Skin>(AssetPaths.SKIN, Skin.class);

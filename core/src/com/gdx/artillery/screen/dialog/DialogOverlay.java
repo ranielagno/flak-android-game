@@ -45,7 +45,7 @@ public class DialogOverlay extends Table {
         BitmapFont font = assetManager.get(AssetDescriptors.FONT);
         Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.BLACK);
 
-        TextureAtlas dialogAtlas = assetManager.get(AssetDescriptors.DIALOG);
+        TextureAtlas dialogAtlas = assetManager.get(AssetDescriptors.HUD);
 
         TextureRegion dialogBackgroundRegion = dialogAtlas.findRegion(RegionNames.DIALOG_BACKGROUND);
 
@@ -55,6 +55,7 @@ public class DialogOverlay extends Table {
         TextureRegion dialogPlayButtonRegion = dialogAtlas.findRegion(RegionNames.PLAY_BUTTON);
 
         TextureRegion stateRegion = null;
+
         if (gameState.isGameOver()) {
             stateRegion = (gameWorld.isGameWon())? dialogAtlas.findRegion(RegionNames.CONQUERED):
                     dialogAtlas.findRegion(RegionNames.DEFEATED);

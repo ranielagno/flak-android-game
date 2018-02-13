@@ -11,6 +11,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Logger;
@@ -61,9 +63,17 @@ public class GameRenderer implements Disposable {
 
     private TextureAtlas level1Atlas;
     private TextureAtlas level2Atlas;
+    private TextureAtlas hudAtlas;
+
+    TextureRegion clockRegion;
+    TextureRegion scoreRegion;
+    TextureRegion pauseRegion;
 
     private Stage hudStage;
     private DialogOverlay dialogOverlay;
+
+    private static final Logger LOGGER = new Logger(GameWorld.class.getName(), Logger.DEBUG);
+
 
     // == constructors ==
 
@@ -87,6 +97,11 @@ public class GameRenderer implements Disposable {
 
         level1Atlas = assetManager.get(AssetDescriptors.LAND);
         level2Atlas = assetManager.get(AssetDescriptors.SEA);
+        hudAtlas = assetManager.get(AssetDescriptors.HUD);
+
+        clockRegion = hudAtlas.findRegion(RegionNames.CLOCK);
+        scoreRegion = hudAtlas.findRegion(RegionNames.SCORE);
+        pauseRegion = hudAtlas.findRegion(RegionNames.PAUSE_BUTTON);
 
     }
 
@@ -255,15 +270,26 @@ public class GameRenderer implements Disposable {
 
     private void drawHud() {
 
-        String timeString = "TIME: " + gameWorld.getGameTimeString();
+        String timeString = gameWorld.getGameTimeString();
         layout.setText(font, timeString);
-        font.draw(batch, layout,
-                2f, GameConfig.HUD_HEIGHT - layout.height);
 
-        String scoreString = "SCORE: " + gameWorld.getScoreString();
-        layout.setText(font, scoreString);
+        batch.draw(clockRegion,
+                GameConfig.CLOCK_X, GameConfig.CLOCK_Y,
+                GameConfig.HUD_SIZE, GameConfig.HUD_SIZE);
+
         font.draw(batch, layout,
-                GameConfig.HUD_WIDTH - layout.width - 2f,
+                GameConfig.CLOCK_X + GameConfig.HUD_SIZE + 5f, GameConfig.HUD_HEIGHT - layout.height);
+
+
+        String scoreString = gameWorld.getScoreString();
+        layout.setText(font, scoreString);
+
+        batch.draw(scoreRegion,
+                GameConfig.SCORE_X, GameConfig.SCORE_Y,
+                GameConfig.HUD_SIZE, GameConfig.HUD_SIZE);
+
+        font.draw(batch, layout,
+                GameConfig.HUD_WIDTH - 75f,
                 GameConfig.HUD_HEIGHT - layout.height);
 
 

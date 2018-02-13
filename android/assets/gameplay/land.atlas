@@ -10,51 +10,58 @@ background_land
   orig: 720, 1280
   offset: 0, 0
   index: -1
+ally_plane
+  rotate: false
+  xy: 723, 878
+  size: 566, 403
+  orig: 566, 403
+  offset: 0, 0
+  index: -1
 enemy_jet
   rotate: false
-  xy: 723, 1043
+  xy: 723, 638
   size: 333, 238
   orig: 333, 238
   offset: 0, 0
   index: -1
 missile
   rotate: false
-  xy: 723, 791
+  xy: 723, 386
   size: 250, 250
   orig: 250, 250
   offset: 0, 0
   index: -1
 vehicle_tank
   rotate: false
-  xy: 723, 618
+  xy: 723, 213
   size: 241, 171
   orig: 241, 171
   offset: 0, 0
   index: -1
 cannon_tank
   rotate: false
-  xy: 723, 349
+  xy: 975, 369
   size: 78, 267
   orig: 78, 267
   offset: 0, 0
   index: -1
 boss
   rotate: false
-  xy: 803, 475
+  xy: 1058, 735
   size: 181, 141
   orig: 181, 141
   offset: 0, 0
   index: -1
 boss_missile
   rotate: false
-  xy: 723, 249
+  xy: 723, 113
   size: 50, 98
   orig: 50, 98
   offset: 0, 0
   index: -1
 enemy_missile
   rotate: false
-  xy: 975, 952
+  xy: 1058, 644
   size: 33, 89
   orig: 33, 89
   offset: 0, 0

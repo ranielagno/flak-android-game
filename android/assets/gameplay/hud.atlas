@@ -1,61 +1,82 @@
 
-dialog.png
+hud.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
 bar
   rotate: false
-  xy: 1, 133
+  xy: 1, 5
   size: 645, 366
   orig: 645, 366
   offset: 0, 0
   index: -1
 conquered
   rotate: false
-  xy: 1, 67
+  xy: 648, 307
   size: 502, 64
   orig: 502, 64
   offset: 0, 0
   index: -1
 continue
   rotate: false
-  xy: 1, 1
+  xy: 648, 241
   size: 477, 64
   orig: 477, 64
   offset: 0, 0
   index: -1
+defeated
+  rotate: false
+  xy: 648, 175
+  size: 425, 64
+  orig: 425, 64
+  offset: 0, 0
+  index: -1
+score
+  rotate: false
+  xy: 648, 1
+  size: 144, 172
+  orig: 144, 172
+  offset: 0, 0
+  index: -1
 home
   rotate: false
-  xy: 648, 356
+  xy: 794, 30
   size: 142, 143
   orig: 142, 143
   offset: 0, 0
   index: -1
 next
   rotate: false
-  xy: 648, 211
+  xy: 938, 30
   size: 142, 143
   orig: 142, 143
   offset: 0, 0
   index: -1
+pause
+  rotate: false
+  xy: 1152, 228
+  size: 142, 143
+  orig: 142, 143
+  offset: 0, 0
+  index: -1
+clock
+  rotate: false
+  xy: 1296, 275
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
 play
   rotate: false
-  xy: 792, 356
+  xy: 1082, 83
   size: 142, 143
   orig: 142, 143
   offset: 0, 0
   index: -1
 reset
   rotate: false
-  xy: 792, 211
+  xy: 1226, 83
   size: 142, 143
   orig: 142, 143
-  offset: 0, 0
-  index: -1
-defeated
-  rotate: false
-  xy: 505, 67
-  size: 425, 64
-  orig: 425, 64
   offset: 0, 0
   index: -1

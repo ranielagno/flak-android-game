@@ -53,7 +53,18 @@ public class GameConfig {
 
     public static final float ENEMY_BULLET_HEIGHT = ENEMY_VEHICLE_HEIGHT / 1.5f;
     public static final float ENEMY_BULLET_WIDTH = (ENEMY_BULLET_HEIGHT * 33f) / 89f;
-    public static final float ENEMY_BULLET_SPEED = 5f;
+    public static final float ENEMY_BULLET_SPEED = 6f;
+
+    public static final float CLOCK_X = 40f;
+    public static final float CLOCK_Y = HUD_HEIGHT - 50f;
+    public static final float HUD_SIZE = 40f;
+    public static final float SCORE_X = HUD_WIDTH - HUD_SIZE - 80f;
+    public static final float SCORE_Y = CLOCK_Y;
+
+    public static final float SED_LOGO_SIZE = 10f;
+    public static final float SED_LOGO_HALF_SIZE = SED_LOGO_SIZE / 2f;
+    public static final float SED_LOGO_X = WORLD_CENTER_X -  SED_LOGO_HALF_SIZE;
+    public static final float SED_LOGO_Y = WORLD_CENTER_Y -  SED_LOGO_HALF_SIZE;
 
     // 240w / 171h = 4 / x vehicle
     // 267h / 78w = 2.5f / x cannon

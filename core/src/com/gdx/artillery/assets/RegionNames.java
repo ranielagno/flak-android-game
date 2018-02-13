@@ -37,7 +37,7 @@ public class RegionNames {
     public static final String SEA_BOSS_MISSILE = "boss_missile";
 
 
-    // Dialog Atlas
+    // HUD Atlas
     public static final String DIALOG_BACKGROUND = "bar";
     public static final String CONQUERED = "conquered";
     public static final String CONTINUE = "continue";
@@ -46,7 +46,12 @@ public class RegionNames {
     public static final String RESET_BUTTON = "reset";
     public static final String NEXT_LEVEL_BUTTON = "next";
     public static final String PLAY_BUTTON = "play";
+    public static final String PAUSE_BUTTON = "pause";
+    public static final String CLOCK = "clock";
+    public static final String SCORE = "score";
 
+    // Logo atlas
+    public static final String SED_LOGO = "sed";
 
     private RegionNames() {}
 }

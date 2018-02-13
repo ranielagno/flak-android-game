@@ -11,7 +11,9 @@ public class AssetPaths {
 
     public static final String MENU = "gameplay/menu.atlas";
 
-    public static final String DIALOG = "gameplay/dialog.atlas";
+    public static final String HUD = "gameplay/hud.atlas";
+
+    public static final String LOGO = "gameplay/logo.atlas";
 
     public static final String UI = "ui/uiskin.atlas";
 

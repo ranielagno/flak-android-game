@@ -6,6 +6,9 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -36,6 +39,9 @@ public class LoadingScreen extends ScreenAdapter {
 
     private final ArtilleryGame game;
     private final AssetManager assetManager;
+    private final SpriteBatch batch;
+
+    private Texture sed_logo;
 
     private final Color color = Color.BLACK;
 
@@ -43,6 +49,7 @@ public class LoadingScreen extends ScreenAdapter {
     public LoadingScreen(ArtilleryGame game) {
         this.game = game;
         this.assetManager = game.getAssetManager();
+        this.batch = game.getBatch();
     }
 
     // == public methods ==
@@ -57,9 +64,10 @@ public class LoadingScreen extends ScreenAdapter {
         assetManager.load(AssetDescriptors.LAND);
         assetManager.load(AssetDescriptors.SEA);
         assetManager.load(AssetDescriptors.MENU);
-        assetManager.load(AssetDescriptors.DIALOG);
+        assetManager.load(AssetDescriptors.HUD);
+        //assetManager.load(AssetDescriptors.LOGO);
 
-        //shassetManager.load(AssetDescriptors.SKIN);
+        sed_logo = new Texture(Gdx.files.internal("logo/sed.png"));
 
     }
 
@@ -80,6 +88,16 @@ public class LoadingScreen extends ScreenAdapter {
 
         renderer.end();
 
+        batch.setProjectionMatrix(camera.combined);
+
+        batch.begin();
+
+        batch.draw(sed_logo,
+                GameConfig.SED_LOGO_X, GameConfig.SED_LOGO_Y,
+                GameConfig.SED_LOGO_SIZE, GameConfig.SED_LOGO_SIZE);
+
+        batch.end();
+
         if (changeScreen) {
             game.setScreen(new MenuScreen(game));
         }
@@ -99,6 +117,7 @@ public class LoadingScreen extends ScreenAdapter {
     @Override
     public void dispose() {
         renderer.dispose();
+        sed_logo.dispose();
     }
 
     // == private methods ==
@@ -120,7 +139,7 @@ public class LoadingScreen extends ScreenAdapter {
     private void draw() {
 
         float progressBarX = (GameConfig.WORLD_WIDTH - PROGRESS_BAR_WIDTH) / 2f;
-        float progressBarY = (GameConfig.WORLD_HEIGHT - PROGRESS_BAR_HEIGHT) / 2f;
+        float progressBarY = (GameConfig.WORLD_HEIGHT - PROGRESS_BAR_HEIGHT) / 4f;
 
         renderer.rect(progressBarX, progressBarY,
                 progress * PROGRESS_BAR_WIDTH, PROGRESS_BAR_HEIGHT);
