@@ -58,8 +58,10 @@ public class GameWorld {
 
     private boolean gameWon = false;
 
+    private int currentLevelScore = 0;
+
     // == constructors ==
-    public GameWorld(EntityFactory factory, ScoreController scoreController) {
+    public GameWorld(EntityFactory factory, final ScoreController scoreController) {
         this.factory = factory;
         this.scoreController = scoreController;
 
@@ -73,6 +75,7 @@ public class GameWorld {
             public void restart() {
 
                 if (gameState.isGameOver()) {
+                    scoreController.setScore(currentLevelScore);
                     startLevel(currentLevel);
                 } else if (gameState.isPaused()) {
                     gameState = GameState.PLAYING;
@@ -81,6 +84,8 @@ public class GameWorld {
 
             @Override
             public void nextLevel() {
+
+                currentLevelScore = scoreController.getScore();
 
                 if (currentLevel == LevelState.Level1) {
                     startLevel(LevelState.Level2);
@@ -136,6 +141,7 @@ public class GameWorld {
             updateEnemyBullets(delta);
             checkEnemyHit();
             checkVehicleHit();
+            checkMissilesHit();
         }
 
     }
@@ -250,6 +256,28 @@ public class GameWorld {
     }
 
 
+    private void checkMissilesHit() {
+
+        for (int i = 0; i < bullets.size; i++) {
+            ArtilleryBullet bullet = bullets.get(i);
+
+            for (int j = 0; j < enemyBullets.size; j++) {
+
+                EnemyBullet enemyBullet = enemyBullets.get(j);
+                Rectangle enemyBounds = enemyBullet.getBounds();
+
+                if (Intersector.overlaps(bullet.getBounds(), enemyBounds)) {
+
+                    factory.freeEnemyBullet(enemyBullet);
+                    factory.freeBullet(bullet);
+
+                    bullets.removeIndex(i);
+                    enemyBullets.removeIndex(j);
+
+                }
+            }
+        }
+    }
 
     private void spawnBullet(ArtilleryCannon cannon) {
         float cannonDegrees = 90 + cannon.getRotation();

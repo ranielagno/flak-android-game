@@ -44,6 +44,13 @@ public class ScoreController {
         prefs.flush();
     }
 
+    public void setScore(int score) {
+        this.score = score;
+    }
+    public int getScore() {
+        return score;
+    }
+
     public String getScoreString() {
         return Integer.toString(score);
     }

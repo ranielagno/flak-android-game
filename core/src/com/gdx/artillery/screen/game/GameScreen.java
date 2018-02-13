@@ -84,7 +84,7 @@ public class GameScreen extends ScreenAdapter {
 
     @Override
     public void hide() {
-        //gameWorld.setGameState(GameState.PAUSED);
+        dispose();
     }
 
     @Override
