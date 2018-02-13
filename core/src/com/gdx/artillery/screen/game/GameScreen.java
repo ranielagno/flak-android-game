@@ -84,7 +84,16 @@ public class GameScreen extends ScreenAdapter {
 
     @Override
     public void hide() {
-        gameWorld.setGameState(GameState.PAUSE);
+        //gameWorld.setGameState(GameState.PAUSED);
+    }
+
+    @Override
+    public void pause () {
+        gameWorld.setGameState(GameState.PAUSED);
+    }
+
+    @Override
+    public void resume () {
     }
 
     @Override

@@ -71,7 +71,12 @@ public class GameWorld {
 
             @Override
             public void restart() {
-                startLevel(currentLevel);
+
+                if (gameState.isGameOver()) {
+                    startLevel(currentLevel);
+                } else if (gameState.isPaused()) {
+                    gameState = GameState.PLAYING;
+                }
             }
 
             @Override
@@ -109,13 +114,6 @@ public class GameWorld {
 
     public void update(float delta) {
 
-        reloadTime += delta;
-
-        if (reloadTime >= GameConfig.RELOAD_TIME && !gameState.isGameOver()) {
-            spawnBullet(cannon);
-            reloadTime = 0;
-        }
-
         if (isGameTimerFinished() && !gameState.isGameOver()) {
             gameState = GameState.GAME_OVER;
             gameWon = true;
@@ -123,6 +121,14 @@ public class GameWorld {
         }
 
         if (gameState.isPlaying()) {
+
+            reloadTime += delta;
+
+            if (reloadTime >= GameConfig.RELOAD_TIME && !gameState.isGameOver()) {
+                spawnBullet(cannon);
+                reloadTime = 0;
+            }
+
             updateGameTimer(delta);
             updateBullets(delta);
             updateEnemies(delta);
@@ -392,16 +398,17 @@ public class GameWorld {
         }
     }
 
+    private void resetGameWorld() {
+        this.gameTimer = GameConfig.GAME_TIMER_MINUTE * 60f;
+        vehicle.setPosition(GameConfig.VEHICLE_TANK_X, GameConfig.VEHICLE_TANK_Y);
+        cannon.setRotation(0);
+        clearGameWorld();
+    }
+
     // == public methods
 
     public boolean isGameTimerFinished() {
         return gameTimer <= 0;
-    }
-
-    public void resetGameWorld() {
-        this.gameTimer = GameConfig.GAME_TIMER_MINUTE * 60f;
-        vehicle.setPosition(GameConfig.VEHICLE_TANK_X, GameConfig.VEHICLE_TANK_Y);
-        cannon.setRotation(0);
     }
 
     public Background getBackground() {

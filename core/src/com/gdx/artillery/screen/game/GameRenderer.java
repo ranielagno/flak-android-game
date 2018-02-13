@@ -28,7 +28,6 @@ import com.gdx.artillery.entity.EnemyBullet;
 import com.gdx.artillery.entity.EnemyVehicle;
 import com.gdx.artillery.screen.dialog.DialogOverlay;
 import com.jga.util.GdxUtils;
-import com.sun.org.apache.regexp.internal.RE;
 
 /**
  * Created by Raniel Agno on 12/28/2017.
@@ -64,7 +63,7 @@ public class GameRenderer implements Disposable {
     private TextureAtlas level2Atlas;
 
     private Stage hudStage;
-    private DialogOverlay gameOverOverlay;
+    private DialogOverlay dialogOverlay;
 
     // == constructors ==
 
@@ -226,7 +225,9 @@ public class GameRenderer implements Disposable {
 
         GameState gameState = gameWorld.getGameState();
 
-        //gameOverOverlay.setVisible(false);
+        if (dialogOverlay != null) {
+            dialogOverlay.setVisible(false);
+        }
 
         if (gameState.isPlaying()) {
 
@@ -240,11 +241,11 @@ public class GameRenderer implements Disposable {
 
         }
 
-        if (gameState.isGameOver()) {
-            gameOverOverlay = new DialogOverlay(assetManager, gameWorld);
-            hudStage.addActor(gameOverOverlay);
+        if (gameState.isGameOver() || gameState.isPaused()) {
+            dialogOverlay = new DialogOverlay(assetManager, gameWorld);
+            hudStage.addActor(dialogOverlay);
             Gdx.input.setInputProcessor(hudStage);
-            gameOverOverlay.setVisible(true);
+            dialogOverlay.setVisible(true);
         }
 
         hudStage.act();

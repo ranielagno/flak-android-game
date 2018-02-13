@@ -7,12 +7,13 @@ package com.gdx.artillery.common;
 public enum GameState {
     MENU,
     PLAYING,
-    PAUSE,
+    PAUSED,
     GAME_OVER;
 
     // == public methods ==
     public boolean isMenu() { return this == MENU; }
     public boolean isPlaying() { return this == PLAYING; }
+    public boolean isPaused() { return this == PAUSED; }
     public boolean isGameOver() { return this == GAME_OVER; }
 
 }

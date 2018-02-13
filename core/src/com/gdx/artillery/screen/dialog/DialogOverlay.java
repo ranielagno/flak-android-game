@@ -15,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Logger;
 import com.gdx.artillery.assets.AssetDescriptors;
 import com.gdx.artillery.assets.RegionNames;
+import com.gdx.artillery.common.GameState;
 import com.gdx.artillery.screen.game.GameWorld;
 
 /**
@@ -26,16 +27,12 @@ public class DialogOverlay extends Table {
     // == attributes ==
     protected final AssetManager assetManager;
     private final OverlayCallback callback;
-    private Label highScoreLabel;
     private GameWorld gameWorld;
-    private static final Logger LOGGER = new Logger(GameWorld.class.getName(), Logger.DEBUG);
-
 
     // == constructor ==
     //OverlayCallback overlayCallback, boolean gameWon
     public DialogOverlay(AssetManager assetManager, GameWorld gameWorld) {
         this.assetManager = assetManager;
-        //this.callback = overlayCallback;
         this.gameWorld = gameWorld;
         this.callback = gameWorld.getOverlayCallback();
         init();
@@ -44,6 +41,7 @@ public class DialogOverlay extends Table {
     // == init ==
     private void init() {
 
+        GameState gameState = gameWorld.getGameState();
         BitmapFont font = assetManager.get(AssetDescriptors.FONT);
         Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.BLACK);
 
@@ -51,14 +49,18 @@ public class DialogOverlay extends Table {
 
         TextureRegion dialogBackgroundRegion = dialogAtlas.findRegion(RegionNames.DIALOG_BACKGROUND);
 
-        TextureRegion dialogContinueRegion = dialogAtlas.findRegion(RegionNames.CONTINUE);
         TextureRegion dialogHomeButtonRegion = dialogAtlas.findRegion(RegionNames.HOME_BUTTON);
         TextureRegion dialogResetButtonRegion = dialogAtlas.findRegion(RegionNames.RESET_BUTTON);
         TextureRegion dialogNextButtonRegion = dialogAtlas.findRegion(RegionNames.NEXT_LEVEL_BUTTON);
         TextureRegion dialogPlayButtonRegion = dialogAtlas.findRegion(RegionNames.PLAY_BUTTON);
 
-        TextureRegion stateRegion = (gameWorld.isGameWon())?
-                dialogAtlas.findRegion(RegionNames.CONQUERED): dialogAtlas.findRegion(RegionNames.DEFEATED);
+        TextureRegion stateRegion = null;
+        if (gameState.isGameOver()) {
+            stateRegion = (gameWorld.isGameWon())? dialogAtlas.findRegion(RegionNames.CONQUERED):
+                    dialogAtlas.findRegion(RegionNames.DEFEATED);
+        } else if (gameState.isPaused()) {
+            stateRegion = dialogAtlas.findRegion(RegionNames.CONTINUE);
+        }
 
         Table gameResponseTable = new Table();
         gameResponseTable.top();
@@ -73,8 +75,6 @@ public class DialogOverlay extends Table {
 
         String scoreString  = gameWorld.getScoreString();
         String highScore  = gameWorld.getHighScoreString();
-
-        LOGGER.debug(scoreString);
 
         Label scoreLabel = new Label(scoreString, labelStyle);
         Label highScoreLabel = new Label(highScore, labelStyle);
@@ -100,8 +100,15 @@ public class DialogOverlay extends Table {
             }
         });
 
-        ImageButton resetButton = new ImageButton(new TextureRegionDrawable(dialogResetButtonRegion));
-        resetButton.addListener(new ChangeListener() {
+        ImageButton playResetButton = null;
+
+        if (gameState.isGameOver()) {
+            playResetButton = new ImageButton(new TextureRegionDrawable(dialogResetButtonRegion));
+        } else if (gameState.isPaused()) {
+            playResetButton = new ImageButton(new TextureRegionDrawable(dialogPlayButtonRegion));
+        }
+
+        playResetButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 callback.restart();
@@ -117,7 +124,7 @@ public class DialogOverlay extends Table {
         });
 
         buttonsTable.add(homeButton).left();
-        buttonsTable.add(resetButton).bottom();
+        buttonsTable.add(playResetButton).bottom();
         buttonsTable.add(nextLevelButton).right().row();
 
         Table dialogTable = new Table();
