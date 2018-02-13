@@ -40,6 +40,7 @@ public class GameWorld {
 
     private Array<ArtilleryBullet> bullets = new Array<ArtilleryBullet>();
     private Array<EnemyVehicle> enemies = new Array<EnemyVehicle>();
+    private Array<EnemyBullet> enemyBulletsStored = new Array<EnemyBullet>();
     private Array<EnemyBullet> enemyBullets = new Array<EnemyBullet>();
 
     private float reloadTime;
@@ -48,15 +49,14 @@ public class GameWorld {
     private String gameTimeString = "";
     private DecimalFormat df = new DecimalFormat("00");
 
-    private boolean playerSurviveThisLevel = false;
-    private boolean playerDied = false;
-
     private LevelState currentLevel;
 
     private GameState gameState;
     private OverlayCallback callback;
 
     private GameRenderer renderer;
+
+    private boolean gameWon = false;
 
     // == constructors ==
     public GameWorld(EntityFactory factory, ScoreController scoreController) {
@@ -118,6 +118,7 @@ public class GameWorld {
 
         if (isGameTimerFinished() && !gameState.isGameOver()) {
             gameState = GameState.GAME_OVER;
+            gameWon = true;
             clearGameWorld();
         }
 
@@ -125,8 +126,10 @@ public class GameWorld {
             updateGameTimer(delta);
             updateBullets(delta);
             updateEnemies(delta);
+            spawnEnemyBullet();
             updateEnemyBullets(delta);
             checkEnemyHit();
+            checkVehicleHit();
         }
 
     }
@@ -134,10 +137,12 @@ public class GameWorld {
     // == private methods ==
     private void spawnEnemyWave() {
 
+        enemyBulletsStored.clear();
+
         int randomNumberOfEnemy = 0;
 
         if (currentLevel == LevelState.Level1) {
-            randomNumberOfEnemy = 1;
+            randomNumberOfEnemy = MathUtils.random(1, 3);
         } else if (currentLevel == LevelState.Level2) {
             randomNumberOfEnemy = MathUtils.random(3, 5);
         } else if (currentLevel == LevelState.Level3) {
@@ -174,9 +179,9 @@ public class GameWorld {
 
             EnemyVehicle enemy = factory.createEnemyVehicle(enemyVehicleX, enemyVehicleY, isVehicleFromLeft, speed);
             EnemyBullet enemyBullet = factory.createEnemyBullet(enemyBulletX, enemyBulletY);
-            enemy.addAmmo(enemyBullet);
 
             enemies.add(enemy);
+            enemyBulletsStored.add(enemyBullet);
 
         }
 
@@ -198,8 +203,8 @@ public class GameWorld {
                     factory.freeBullet(bullet);
                     factory.freeEnemyVehicle(enemyVehicle);
 
-                    enemyVehicle.setEnemyAlive(false);
                     enemies.removeIndex(i);
+                    enemyBulletsStored.removeIndex(i);
                     bullets.removeIndex(j);
 
                     scoreController.addScore(GameConfig.HIT_ENEMY_SCORE);
@@ -212,6 +217,33 @@ public class GameWorld {
 
         }
     }
+
+    private void checkVehicleHit() {
+
+        for (int i = 0; i < enemyBullets.size; i++) {
+
+            EnemyBullet enemyBullet = enemyBullets.get(i);
+            Rectangle enemyBounds = enemyBullet.getBounds();
+
+            if (Intersector.overlaps(vehicle.getBounds(), enemyBounds)) {
+
+                factory.freeEnemyBullet(enemyBullet);
+
+                enemyBullets.removeIndex(i);
+
+                gameState = GameState.GAME_OVER;
+
+                gameWon = false;
+
+                break;
+
+            }
+
+        }
+
+    }
+
+
 
     private void spawnBullet(ArtilleryCannon cannon) {
         float cannonDegrees = 90 + cannon.getRotation();
@@ -251,20 +283,22 @@ public class GameWorld {
             EnemyVehicle enemy = enemies.get(i);
             enemy.update(delta);
 
-            spawnEnemyBullet(enemy);
-
             if (enemy.isVehicleFromLeft()) {
 
                 if (enemy.getX() > GameConfig.WORLD_WIDTH) {
-                    factory.freeEnemyVehicle(enemy);
+
+                    enemyBulletsStored.removeIndex(i);
                     enemies.removeIndex(i);
+                    factory.freeEnemyVehicle(enemy);
                 }
 
             } else {
 
                 if ((enemy.getX() + enemy.getWidth()) < 0) {
-                    factory.freeEnemyVehicle(enemy);
+
+                    enemyBulletsStored.removeIndex(i);
                     enemies.removeIndex(i);
+                    factory.freeEnemyVehicle(enemy);
                 }
 
             }
@@ -273,29 +307,28 @@ public class GameWorld {
 
     }
 
-    private void spawnEnemyBullet(EnemyVehicle enemyVehicle) {
+    private void spawnEnemyBullet() {
 
-        Array<EnemyBullet> ammo = enemyVehicle.getAmmo();
+        for (int i = 0; i < enemies.size; i++) {
 
-        for (EnemyBullet enemyBullet : ammo) {
-            if (!enemyBullets.contains(enemyBullet, true) && !enemyBullets.contains(enemyBullet, false)) {
-                if (enemyVehicle.isVehicleFromLeft() &&
-                        ((enemyVehicle.getX() + GameConfig.ENEMY_VEHICLE_HALF_WIDTH) >= enemyBullet.getX())) {
-                    enemyBullets.add(enemyBullet);
-                    //LOGGER.debug("Spawn bullet from left");
-                } else if (!enemyVehicle.isVehicleFromLeft() &&
-                        (enemyVehicle.getX() + GameConfig.ENEMY_VEHICLE_HALF_WIDTH) <= enemyBullet.getX()) {
-                    enemyBullets.add(enemyBullet);
-                    //LOGGER.debug("Spawn bullet from right");
-                }
+            EnemyVehicle enemyVehicle = enemies.get(i);
+            EnemyBullet enemyBullet = enemyBulletsStored.get(i);
+
+            if (!enemyVehicle.isMissileLaunched() && enemyVehicle.isVehicleFromLeft() &&
+                    ((enemyVehicle.getX() + GameConfig.ENEMY_VEHICLE_HALF_WIDTH) >= enemyBullet.getX())) {
+                enemyBullets.add(enemyBullet);
+                enemyVehicle.setMissileLaunched(true);
+            } else if (!enemyVehicle.isMissileLaunched() && !enemyVehicle.isVehicleFromLeft() &&
+                    (enemyVehicle.getX() + GameConfig.ENEMY_VEHICLE_HALF_WIDTH) <= enemyBullet.getX()) {
+                enemyBullets.add(enemyBullet);
+                enemyVehicle.setMissileLaunched(true);
             }
-        }
 
+        }
     }
+
 
     private void updateEnemyBullets(float delta) {
-
-        LOGGER.debug(String.valueOf(enemyBullets.size));
 
         for (int i = 0; i < enemyBullets.size; i++) {
             EnemyBullet enemyBullet = enemyBullets.get(i);
@@ -333,7 +366,6 @@ public class GameWorld {
         for (int i = 0; i < enemies.size; i++) {
 
             EnemyVehicle enemy = enemies.get(i);
-            enemy.clearAmmo();
             factory.freeEnemyVehicle(enemy);
             enemies.removeIndex(i);
         }
@@ -343,6 +375,13 @@ public class GameWorld {
             ArtilleryBullet bullet = bullets.get(i);
             factory.freeBullet(bullet);
             bullets.removeIndex(i);
+        }
+
+        for (int i = 0; i < enemyBulletsStored.size; i++) {
+
+            EnemyBullet bullet = enemyBulletsStored.get(i);
+            factory.freeEnemyBullet(bullet);
+            enemyBulletsStored.removeIndex(i);
         }
 
         for (int i = 0; i < enemyBullets.size; i++) {
@@ -401,12 +440,24 @@ public class GameWorld {
         return gameState;
     }
 
+    public String getHighScoreString() {
+        return scoreController.getHighScoreString();
+    }
+
     public OverlayCallback getOverlayCallback() {
         return callback;
     }
 
+    public boolean isGameWon() {
+        return gameWon;
+    }
+
     public void setGameRenderer(GameRenderer gameRenderer) {
         this.renderer = gameRenderer;
+    }
+
+    public void setGameState(GameState gameState) {
+        this.gameState = gameState;
     }
 
     public void startLevel(LevelState levelScreen) {

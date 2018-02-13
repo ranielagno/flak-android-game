@@ -14,8 +14,8 @@ public class GameConfig {
     public static final float HUD_WIDTH = 480f; // world units
     public static final float HUD_HEIGHT = 800f; // world units
 
-    public static final float WORLD_WIDTH = 16.0f; // world units
-    public static final float WORLD_HEIGHT = 26.67f; // world units
+    public static final float WORLD_WIDTH = 17.1f; // world units 16.0f
+    public static final float WORLD_HEIGHT = 28.5f; // world units 26.67f
 
     public static final float WORLD_CENTER_X = WORLD_WIDTH / 2f; // world units
     public static final float WORLD_CENTER_Y = WORLD_HEIGHT / 2f; // world units
@@ -53,7 +53,7 @@ public class GameConfig {
 
     public static final float ENEMY_BULLET_HEIGHT = ENEMY_VEHICLE_HEIGHT / 1.5f;
     public static final float ENEMY_BULLET_WIDTH = (ENEMY_BULLET_HEIGHT * 33f) / 89f;
-    public static final float ENEMY_BULLET_SPEED = 6f;
+    public static final float ENEMY_BULLET_SPEED = 5f;
 
     // 240w / 171h = 4 / x vehicle
     // 267h / 78w = 2.5f / x cannon

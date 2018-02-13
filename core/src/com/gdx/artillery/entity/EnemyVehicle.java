@@ -9,10 +9,9 @@ import com.badlogic.gdx.utils.Pool;
 
 public class EnemyVehicle extends EntityBase implements Pool.Poolable {
 
-    private boolean enemyAlive = true;
     private boolean vehicleFromLeft;
     private int speed;
-    private Array<EnemyBullet> ammo = new Array<EnemyBullet>();
+    private boolean missileLaunched;
 
     public EnemyVehicle() {
 
@@ -29,16 +28,8 @@ public class EnemyVehicle extends EntityBase implements Pool.Poolable {
         updateBounds();
     }
 
-    public boolean isEnemyAlive() {
-        return enemyAlive;
-    }
-
     public boolean isVehicleFromLeft() {
         return vehicleFromLeft;
-    }
-
-    public void setEnemyAlive(boolean enemyAlive) {
-        this.enemyAlive = enemyAlive;
     }
 
     public void setVehicleFromLeft(boolean vehicleFromLeft) {
@@ -49,20 +40,17 @@ public class EnemyVehicle extends EntityBase implements Pool.Poolable {
         this.speed = speed;
     }
 
-    public void addAmmo(EnemyBullet enemyBullet) {
-        ammo.add(enemyBullet);
+    public void setMissileLaunched(boolean missileLaunched) {
+        this.missileLaunched = missileLaunched;
     }
 
-    public Array<EnemyBullet> getAmmo() {
-        return ammo;
-    }
-
-    public void clearAmmo() {
-        ammo.clear();
+    public boolean isMissileLaunched() {
+        return missileLaunched;
     }
 
     @Override
     public void reset() {
 
+        missileLaunched = false;
     }
 }

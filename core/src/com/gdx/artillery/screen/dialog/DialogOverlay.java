@@ -12,8 +12,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Logger;
 import com.gdx.artillery.assets.AssetDescriptors;
 import com.gdx.artillery.assets.RegionNames;
+import com.gdx.artillery.screen.game.GameWorld;
 
 /**
  * Created by Raniel on 2/5/2018.
@@ -25,11 +27,17 @@ public class DialogOverlay extends Table {
     protected final AssetManager assetManager;
     private final OverlayCallback callback;
     private Label highScoreLabel;
+    private GameWorld gameWorld;
+    private static final Logger LOGGER = new Logger(GameWorld.class.getName(), Logger.DEBUG);
+
 
     // == constructor ==
-    public DialogOverlay(AssetManager assetManager, OverlayCallback overlayCallback) {
+    //OverlayCallback overlayCallback, boolean gameWon
+    public DialogOverlay(AssetManager assetManager, GameWorld gameWorld) {
         this.assetManager = assetManager;
-        this.callback = overlayCallback;
+        //this.callback = overlayCallback;
+        this.gameWorld = gameWorld;
+        this.callback = gameWorld.getOverlayCallback();
         init();
     }
 
@@ -42,23 +50,43 @@ public class DialogOverlay extends Table {
         TextureAtlas dialogAtlas = assetManager.get(AssetDescriptors.DIALOG);
 
         TextureRegion dialogBackgroundRegion = dialogAtlas.findRegion(RegionNames.DIALOG_BACKGROUND);
-        TextureRegion dialogConqueredRegion = dialogAtlas.findRegion(RegionNames.CONQUERED);
+
         TextureRegion dialogContinueRegion = dialogAtlas.findRegion(RegionNames.CONTINUE);
-        TextureRegion dialogDefeatedRegion = dialogAtlas.findRegion(RegionNames.DEFEATED);
         TextureRegion dialogHomeButtonRegion = dialogAtlas.findRegion(RegionNames.HOME_BUTTON);
         TextureRegion dialogResetButtonRegion = dialogAtlas.findRegion(RegionNames.RESET_BUTTON);
         TextureRegion dialogNextButtonRegion = dialogAtlas.findRegion(RegionNames.NEXT_LEVEL_BUTTON);
         TextureRegion dialogPlayButtonRegion = dialogAtlas.findRegion(RegionNames.PLAY_BUTTON);
 
+        TextureRegion stateRegion = (gameWorld.isGameWon())?
+                dialogAtlas.findRegion(RegionNames.CONQUERED): dialogAtlas.findRegion(RegionNames.DEFEATED);
+
         Table gameResponseTable = new Table();
         gameResponseTable.top();
-        Image gameResponseImage = new Image(dialogConqueredRegion);
+        Image gameResponseImage = new Image(stateRegion);
         gameResponseTable.add(gameResponseImage);
 
         Table scoresTable = new Table();
+        scoresTable.defaults().space(20);
+
+        Label scoreText = new Label("SCORE: ", labelStyle);
         Label highScoreText = new Label("HIGH SCORE: ", labelStyle);
-        String highScore = highScore = "100";
+
+        String scoreString  = gameWorld.getScoreString();
+        String highScore  = gameWorld.getHighScoreString();
+
+        LOGGER.debug(scoreString);
+
+        Label scoreLabel = new Label(scoreString, labelStyle);
         Label highScoreLabel = new Label(highScore, labelStyle);
+
+        scoreText.setFontScaleX(2);
+        scoreText.setFontScaleY(2);
+
+        scoreLabel.setFontScaleX(2);
+        scoreLabel.setFontScaleY(2);
+
+        scoresTable.add(scoreText);
+        scoresTable.add(scoreLabel).row();
         scoresTable.add(highScoreText);
         scoresTable.add(highScoreLabel).row();
 

@@ -86,10 +86,6 @@ public class GameRenderer implements Disposable {
 
         font = assetManager.get(AssetDescriptors.FONT);
 
-        gameOverOverlay = new DialogOverlay(assetManager, gameWorld.getOverlayCallback());
-        hudStage.addActor(gameOverOverlay);
-        Gdx.input.setInputProcessor(hudStage);
-
         level1Atlas = assetManager.get(AssetDescriptors.LAND);
         level2Atlas = assetManager.get(AssetDescriptors.SEA);
 
@@ -230,7 +226,7 @@ public class GameRenderer implements Disposable {
 
         GameState gameState = gameWorld.getGameState();
 
-        gameOverOverlay.setVisible(false);
+        //gameOverOverlay.setVisible(false);
 
         if (gameState.isPlaying()) {
 
@@ -245,6 +241,9 @@ public class GameRenderer implements Disposable {
         }
 
         if (gameState.isGameOver()) {
+            gameOverOverlay = new DialogOverlay(assetManager, gameWorld);
+            hudStage.addActor(gameOverOverlay);
+            Gdx.input.setInputProcessor(hudStage);
             gameOverOverlay.setVisible(true);
         }
 

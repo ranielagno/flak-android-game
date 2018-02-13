@@ -7,6 +7,7 @@ package com.gdx.artillery.common;
 public enum GameState {
     MENU,
     PLAYING,
+    PAUSE,
     GAME_OVER;
 
     // == public methods ==
