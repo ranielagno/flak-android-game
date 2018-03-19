@@ -2,6 +2,7 @@ package com.gdx.artillery.screen.loading;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -10,12 +11,16 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.gdx.artillery.ArtilleryGame;
 import com.gdx.artillery.assets.AssetDescriptors;
+import com.gdx.artillery.common.SoundController;
 import com.gdx.artillery.config.GameConfig;
 import com.gdx.artillery.screen.game.GameScreen;
+import com.gdx.artillery.screen.menu.HighScoreScreen;
 import com.gdx.artillery.screen.menu.MenuScreen;
 
 /**
@@ -23,6 +28,8 @@ import com.gdx.artillery.screen.menu.MenuScreen;
  */
 
 public class LoadingScreen extends ScreenAdapter {
+
+    private static final Logger log = new Logger(HighScoreScreen.class.getName(), Logger.DEBUG);
 
     // == constants ==
     private static final float PROGRESS_BAR_WIDTH = GameConfig.WORLD_CENTER_X;
@@ -60,12 +67,11 @@ public class LoadingScreen extends ScreenAdapter {
         viewport = new FitViewport(GameConfig.WORLD_WIDTH, GameConfig.WORLD_HEIGHT, camera);
         renderer = new ShapeRenderer();
 
-        assetManager.load(AssetDescriptors.FONT);
-        assetManager.load(AssetDescriptors.LAND);
-        assetManager.load(AssetDescriptors.SEA);
-        assetManager.load(AssetDescriptors.MENU);
-        assetManager.load(AssetDescriptors.HUD);
-        //assetManager.load(AssetDescriptors.LOGO);
+        Array<AssetDescriptor> assetDescriptorArray = AssetDescriptors.ALL;
+
+        for (AssetDescriptor descriptor : assetDescriptorArray) {
+            assetManager.load(descriptor);
+        }
 
         sed_logo = new Texture(Gdx.files.internal("logo/sed.png"));
 
@@ -99,6 +105,10 @@ public class LoadingScreen extends ScreenAdapter {
         batch.end();
 
         if (changeScreen) {
+            assetManager.finishLoading();
+            SoundController soundController = new SoundController(assetManager);
+            game.setSoundController(soundController);
+            soundController.menuSoundPlay();
             game.setScreen(new MenuScreen(game));
         }
 
@@ -146,11 +156,4 @@ public class LoadingScreen extends ScreenAdapter {
 
     }
 
-    private void waitMillis(long millis) {
-        try {
-            Thread.sleep(millis);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
 }

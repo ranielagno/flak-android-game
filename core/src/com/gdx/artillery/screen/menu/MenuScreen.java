@@ -13,6 +13,8 @@ import com.badlogic.gdx.utils.Logger;
 import com.gdx.artillery.ArtilleryGame;
 import com.gdx.artillery.assets.AssetDescriptors;
 import com.gdx.artillery.assets.RegionNames;
+import com.gdx.artillery.common.SoundController;
+import com.gdx.artillery.screen.game.GameScreen;
 
 /**
  * Created by Raniel Agno on 1/1/2018.
@@ -21,6 +23,7 @@ import com.gdx.artillery.assets.RegionNames;
 public class MenuScreen extends MenuScreenBase {
 
     private static final Logger log = new Logger(MenuScreen.class.getName(), Logger.DEBUG);
+
 
     public MenuScreen(ArtilleryGame game) {
         super(game);
@@ -90,7 +93,7 @@ public class MenuScreen extends MenuScreenBase {
 
     private void play() {
         log.debug("play");
-        game.setScreen(new StartScreen(game));
+        game.setScreen(new GameScreen(game));
     }
 
     private void showHighScore() {

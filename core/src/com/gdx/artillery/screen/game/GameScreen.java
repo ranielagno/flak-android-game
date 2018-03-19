@@ -8,6 +8,7 @@ import com.gdx.artillery.ArtilleryGame;
 import com.gdx.artillery.common.GameState;
 import com.gdx.artillery.common.LevelState;
 import com.gdx.artillery.common.ScoreController;
+import com.gdx.artillery.common.SoundController;
 import com.gdx.artillery.entity.EntityFactory;
 import com.gdx.artillery.input.CannonInputController;
 import com.gdx.artillery.input.VehicleInputController;
@@ -36,6 +37,7 @@ public class GameScreen extends ScreenAdapter {
     private CannonInputController cannonInputController;
 
     private final ScoreController scoreController;
+    private final SoundController soundController;
 
 
     // == constructors ==
@@ -44,18 +46,22 @@ public class GameScreen extends ScreenAdapter {
         assetManager = game.getAssetManager();
         batch = game.getBatch();
         scoreController = game.getScoreController();
+        soundController = game.getSoundController();
     }
 
     @Override
     public void show() {
 
         factory = new EntityFactory();
-        gameWorld = new GameWorld(factory, scoreController);
+        gameWorld = new GameWorld(factory, scoreController, soundController);
         renderer = new GameRenderer(gameWorld, batch, assetManager);
         controller = new GameController(gameWorld, renderer);
 
-        vehicleInputController = new VehicleInputController(gameWorld.getVehicle(), controller);
-        cannonInputController = new CannonInputController(gameWorld.getCannon(), gameWorld.getVehicle(), controller);
+        vehicleInputController = new VehicleInputController(gameWorld, controller);
+        cannonInputController = new CannonInputController(gameWorld, controller);
+
+        soundController.menuSoundStop();
+        soundController.gameSoundPlay();
 
         gameWorld.setGameRenderer(renderer);
         gameWorld.startLevel(LevelState.Level1);
@@ -89,7 +95,7 @@ public class GameScreen extends ScreenAdapter {
 
     @Override
     public void pause () {
-        gameWorld.setGameState(GameState.PAUSED);
+        //gameWorld.setGameState(GameState.PAUSED);
     }
 
     @Override

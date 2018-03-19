@@ -26,10 +26,10 @@ public class CannonInputController {
     private final Rectangle screenRightSide;
 
     // == constructors ==
-    public CannonInputController(ArtilleryCannon cannon, ArtilleryVehicle vehicle, GameController controller) {
-        this.cannon = cannon;
+    public CannonInputController(GameWorld gameWorld, GameController controller) {
+        this.cannon = gameWorld.getCannon();
         this.controller = controller;
-        this.vehicle = vehicle;
+        this.vehicle = gameWorld.getVehicle();
 
         float halfWorldWidth = GameConfig.WORLD_WIDTH / 2;
         float startingPointY = vehicle.getY() * 2 + vehicle.getHeight();

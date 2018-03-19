@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.Logger;
 import com.gdx.artillery.common.GameState;
 import com.gdx.artillery.common.LevelState;
 import com.gdx.artillery.common.ScoreController;
+import com.gdx.artillery.common.SoundController;
 import com.gdx.artillery.config.GameConfig;
 import com.gdx.artillery.entity.ArtilleryBullet;
 import com.gdx.artillery.entity.ArtilleryCannon;
@@ -19,7 +20,6 @@ import com.gdx.artillery.entity.EnemyBullet;
 import com.gdx.artillery.entity.EnemyVehicle;
 import com.gdx.artillery.entity.EntityFactory;
 import com.gdx.artillery.screen.dialog.OverlayCallback;
-import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 
 import java.text.DecimalFormat;
 
@@ -35,6 +35,7 @@ public class GameWorld {
     // == attributes ==
     private final EntityFactory factory;
     private final ScoreController scoreController;
+    private final SoundController soundController;
 
     private ArtilleryVehicle vehicle;
 
@@ -64,14 +65,17 @@ public class GameWorld {
     private int currentLevelScore = 0;
 
     // == constructors ==
-    public GameWorld(EntityFactory factory, final ScoreController scoreController) {
+    public GameWorld(EntityFactory factory, final ScoreController scoreController, final SoundController soundController) {
         this.factory = factory;
         this.scoreController = scoreController;
+        this.soundController = soundController;
 
         callback = new OverlayCallback() {
             @Override
             public void home() {
                 gameState = GameState.MENU;
+                soundController.gameSoundStop();
+                soundController.menuSoundPlay();
             }
 
             @Override
@@ -83,6 +87,9 @@ public class GameWorld {
                 } else if (gameState.isPaused()) {
                     gameState = GameState.PLAYING;
                 }
+
+                soundController.gameSoundStop();
+                soundController.gameSoundPlay();
             }
 
             @Override
@@ -95,6 +102,9 @@ public class GameWorld {
                 } else if (currentLevel == LevelState.Level2) {
                     gameState = GameState.MENU;
                 }
+
+                soundController.gameSoundStop();
+                soundController.gameSoundPlay();
             }
 
         };
@@ -164,8 +174,10 @@ public class GameWorld {
 
         if (currentLevel == LevelState.Level1) {
             randomNumberOfEnemy = MathUtils.random(1, 3);
+            soundController.jetSoundPlay();
         } else if (currentLevel == LevelState.Level2) {
             randomNumberOfEnemy = MathUtils.random(3, 5);
+            soundController.oldAircraftSound();
         } else if (currentLevel == LevelState.Level3) {
             randomNumberOfEnemy = MathUtils.random(5, 7);
         }
@@ -229,6 +241,7 @@ public class GameWorld {
                     bullets.removeIndex(j);
 
                     scoreController.addScore(GameConfig.HIT_ENEMY_SCORE);
+                    soundController.hit();
 
                     break;
 
@@ -256,6 +269,8 @@ public class GameWorld {
 
                 gameWon = false;
 
+                soundController.hit();
+
                 break;
 
             }
@@ -277,6 +292,8 @@ public class GameWorld {
 
                 if (Intersector.overlaps(bullet.getBounds(), enemyBounds)) {
 
+                    soundController.hit();
+
                     factory.freeEnemyBullet(enemyBullet);
                     factory.freeBullet(bullet);
 
@@ -297,6 +314,8 @@ public class GameWorld {
 
         float x = startX + (cannon.getHeight() * MathUtils.cosDeg(cannonDegrees));
         float y = startY + (cannon.getHeight() * MathUtils.sinDeg(cannonDegrees));
+
+        soundController.fire();
 
         ArtilleryBullet bullet = factory.createBullet("tank", x, y, cannonDegrees);
         bullets.add(bullet);
@@ -433,13 +452,17 @@ public class GameWorld {
             factory.freeEnemyBullet(bullet);
             enemyBullets.removeIndex(i);
         }
+
+
+        LOGGER.debug("cleared");
     }
 
     private void resetGameWorld() {
+        clearGameWorld();
         this.gameTimer = GameConfig.GAME_TIMER_MINUTE * 60f;
         vehicle.setPosition(GameConfig.VEHICLE_TANK_X, GameConfig.VEHICLE_TANK_Y);
         cannon.setRotation(0);
-        clearGameWorld();
+        LOGGER.debug("resetGameWorld");
     }
 
     // == public methods
@@ -492,6 +515,14 @@ public class GameWorld {
         return callback;
     }
 
+    public SoundController getSoundController() {
+        return soundController;
+    }
+
+    public LevelState getCurrentLevel() {
+        return currentLevel;
+    }
+
     public boolean isGameWon() {
         return gameWon;
     }
@@ -500,21 +531,17 @@ public class GameWorld {
         this.renderer = gameRenderer;
     }
 
-    public void setGameState(GameState gameState) {
-        this.gameState = gameState;
-    }
-
     public void startLevel(LevelState levelScreen) {
         gameState = GameState.PLAYING;
         currentLevel = levelScreen;
+
+        resetGameWorld();
 
         if (levelScreen == LevelState.Level1) {
             renderer.initializeLevel1();
         } else if (levelScreen == LevelState.Level2) {
             renderer.initializeLevel2();
         }
-
-        resetGameWorld();
 
     }
 }

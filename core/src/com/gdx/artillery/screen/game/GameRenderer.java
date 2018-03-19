@@ -190,19 +190,6 @@ public class GameRenderer implements Disposable {
                 cannon.getRotation() // rotation
         );
 
-        /*
-        batch.draw(cannonRegion, // texture
-                cannon.getX(), cannon.getY(), // x, y
-                cannon.getWidth() / 4f , cannon.getHeight() / 4f, // originX, originY
-                cannon.getWidth(), cannon.getHeight(), // width, height
-                1.0f, 1.0f, // scaleX, scaleY
-                cannon.getRotation(), // rotation
-                0, 0, // srcX, srcY (from which pixel should it start rendering)
-                cannonRegion.getWidth(), cannonRegion.getHeight(), // srcWidth, srcHeight
-                false, false // flipX, flipY
-        );
-        */
-
         for (int i = 0; i < enemies.size; i++) {
 
             EnemyVehicle enemy = enemies.get(i);

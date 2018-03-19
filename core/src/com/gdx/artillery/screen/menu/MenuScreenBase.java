@@ -5,10 +5,13 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.gdx.artillery.ArtilleryGame;
+import com.gdx.artillery.common.SoundController;
 import com.gdx.artillery.config.GameConfig;
+import com.gdx.artillery.screen.game.GameWorld;
 import com.jga.util.GdxUtils;
 
 /**
@@ -34,7 +37,6 @@ public abstract class MenuScreenBase extends ScreenAdapter {
         stage = new Stage(viewport, game.getBatch());
 
         Gdx.input.setInputProcessor(stage);
-
         stage.addActor(createUI());
     }
 

@@ -3,9 +3,12 @@ package com.gdx.artillery.input;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.gdx.artillery.common.LevelState;
+import com.gdx.artillery.common.SoundController;
 import com.gdx.artillery.config.GameConfig;
 import com.gdx.artillery.entity.ArtilleryVehicle;
 import com.gdx.artillery.screen.game.GameController;
+import com.gdx.artillery.screen.game.GameWorld;
 
 /**
  * Created by Raniel Agno on 1/2/2018.
@@ -14,15 +17,19 @@ import com.gdx.artillery.screen.game.GameController;
 public class VehicleInputController {
 
     // == attributes ==
+    private GameWorld gameWorld;
     private ArtilleryVehicle vehicle;
     private GameController controller;
+    private SoundController soundController;
     private final Rectangle screenLeftSide;
     private final Rectangle screenRightSide;
 
     // == constructors ==
-    public VehicleInputController(ArtilleryVehicle vehicle, GameController controller) {
-        this.vehicle = vehicle;
+    public VehicleInputController(GameWorld gameWorld, GameController controller) {
+        this.gameWorld = gameWorld;
+        this.vehicle = gameWorld.getVehicle();
         this.controller = controller;
+        this.soundController = gameWorld.getSoundController();
 
         float halfWorldWidth = GameConfig.WORLD_WIDTH / 2;
         float controllerPortionOfWorldHeight = vehicle.getY() * 2 + vehicle.getHeight();
@@ -38,6 +45,8 @@ public class VehicleInputController {
 
         for (int i = 0; i < 2; i++) {
 
+            LevelState currentLevel = gameWorld.getCurrentLevel();
+
             if (Gdx.input.isTouched(i)) {
                 float screenX = Gdx.input.getX(i);
                 float screenY = Gdx.input.getY(i);
@@ -51,6 +60,8 @@ public class VehicleInputController {
                     x += GameConfig.VEHICLE_SPEED * delta;
                 }
 
+                soundChecker(currentLevel, true);
+
                 // Logic for block vehicle to leave world bounds
                 if (x <= 0)
                     x = 0;
@@ -59,11 +70,30 @@ public class VehicleInputController {
 
                 vehicle.setPosition(x, y);
 
+            } else {
+                soundChecker(currentLevel, false);
             }
+
+
 
         }
     }
 
+    private void soundChecker(LevelState currentLevel, boolean play) {
+        if (currentLevel == LevelState.Level1) {
+            if (play) {
+                soundController.tankMoveSound();
+            } else {
+                soundController.tankMoveSoundStop();
+            }
+        } else if (currentLevel == LevelState.Level2) {
+            if (play) {
+                soundController.shipMoveSound();
+            } else {
+                soundController.shipMoveSoundStop();
+            }
+        }
+    }
     private boolean isLeftSideTouched(Vector2 worldCoordinates) {
         return screenLeftSide.contains(worldCoordinates);
     }

@@ -88,6 +88,7 @@ public class StartScreen extends MenuScreenBase {
     }
 
     private void play() {
+        //soundController.menuSoundStop();
         game.setScreen(new GameScreen(game));
     }
 

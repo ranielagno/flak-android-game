@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Logger;
 import com.gdx.artillery.common.ScoreController;
+import com.gdx.artillery.common.SoundController;
 import com.gdx.artillery.screen.game.GameScreen;
 import com.gdx.artillery.screen.loading.LoadingScreen;
 
@@ -19,6 +20,7 @@ public class ArtilleryGame extends Game {
     private SpriteBatch batch;
 
     private ScoreController scoreController;
+    private SoundController soundController;
 
     @Override
     public void create() {
@@ -51,5 +53,13 @@ public class ArtilleryGame extends Game {
 
     public ScoreController getScoreController() {
         return scoreController;
+    }
+
+    public SoundController getSoundController() {
+        return soundController;
+    }
+
+    public void setSoundController(SoundController soundController) {
+        this.soundController = soundController;
     }
 }

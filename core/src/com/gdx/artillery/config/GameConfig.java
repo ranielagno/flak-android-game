@@ -66,6 +66,8 @@ public class GameConfig {
     public static final float SED_LOGO_X = WORLD_CENTER_X -  SED_LOGO_HALF_SIZE;
     public static final float SED_LOGO_Y = WORLD_CENTER_Y -  SED_LOGO_HALF_SIZE;
 
+    public static final float SFX_VOLUME = 0.2f; // range 0-1
+
     // 240w / 171h = 4 / x vehicle
     // 267h / 78w = 2.5f / x cannon
     // 181w / 131h = 3.7 / x chopper
