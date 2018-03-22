@@ -9,7 +9,6 @@ import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.gdx.artillery.ArtilleryGame;
-import com.gdx.artillery.common.SoundController;
 import com.gdx.artillery.config.GameConfig;
 import com.gdx.artillery.screen.game.GameWorld;
 import com.jga.util.GdxUtils;
@@ -19,6 +18,8 @@ import com.jga.util.GdxUtils;
  */
 
 public abstract class MenuScreenBase extends ScreenAdapter {
+
+    private static final Logger LOGGER = new Logger(GameWorld.class.getName(), Logger.DEBUG);
 
     protected final ArtilleryGame game;
     protected final AssetManager assetManager;
@@ -36,8 +37,8 @@ public abstract class MenuScreenBase extends ScreenAdapter {
         viewport = new FitViewport(GameConfig.HUD_WIDTH, GameConfig.HUD_HEIGHT);
         stage = new Stage(viewport, game.getBatch());
 
-        Gdx.input.setInputProcessor(stage);
         stage.addActor(createUI());
+        Gdx.input.setInputProcessor(stage);
     }
 
     protected abstract Actor createUI();

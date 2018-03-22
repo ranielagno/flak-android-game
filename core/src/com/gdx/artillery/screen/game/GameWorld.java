@@ -96,18 +96,21 @@ public class GameWorld {
             public void nextLevel() {
 
                 currentLevelScore = scoreController.getScore();
+                soundController.gameSoundStop();
 
                 if (currentLevel == LevelState.Level1) {
+                    soundController.gameSoundPlay();
                     startLevel(LevelState.Level2);
                 } else if (currentLevel == LevelState.Level2) {
+                    soundController.menuSoundPlay();
                     gameState = GameState.MENU;
                 }
 
-                soundController.gameSoundStop();
-                soundController.gameSoundPlay();
+
             }
 
         };
+
 
         init();
     }
@@ -453,8 +456,6 @@ public class GameWorld {
             enemyBullets.removeIndex(i);
         }
 
-
-        LOGGER.debug("cleared");
     }
 
     private void resetGameWorld() {
@@ -462,7 +463,6 @@ public class GameWorld {
         this.gameTimer = GameConfig.GAME_TIMER_MINUTE * 60f;
         vehicle.setPosition(GameConfig.VEHICLE_TANK_X, GameConfig.VEHICLE_TANK_Y);
         cannon.setRotation(0);
-        LOGGER.debug("resetGameWorld");
     }
 
     // == public methods

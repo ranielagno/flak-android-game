@@ -10,7 +10,7 @@ import com.gdx.artillery.config.GameConfig;
  * Created by Raniel Agno on 12/28/2017.
  */
 
-public class ArtilleryBullet implements Pool.Poolable{
+public class ArtilleryBullet implements Pool.Poolable {
 
     private static final Logger log = new Logger(ArtilleryBullet.class.getName(), Logger.DEBUG);
 

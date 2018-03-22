@@ -10,11 +10,12 @@ import com.gdx.artillery.config.GameConfig;
 public class EnemyBullet extends EntityBase implements Pool.Poolable {
 
     private float rotation = 0f;
-    private boolean showBullet;
+    private boolean alive;
 
     public EnemyBullet() {
 
         setSize(GameConfig.ENEMY_BULLET_WIDTH, GameConfig.ENEMY_BULLET_HEIGHT);
+        alive = true;
 
     }
 
@@ -25,16 +26,12 @@ public class EnemyBullet extends EntityBase implements Pool.Poolable {
         updateBounds();
     }
 
-    public float getRotation() {
-        return rotation;
-    }
-
-    public void setRotation(float rotation) {
-        this.rotation = rotation;
+    public boolean isAlive() {
+        return alive;
     }
 
     @Override
     public void reset() {
-
+        alive = false;
     }
 }

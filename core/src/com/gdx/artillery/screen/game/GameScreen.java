@@ -5,7 +5,6 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Logger;
 import com.gdx.artillery.ArtilleryGame;
-import com.gdx.artillery.common.GameState;
 import com.gdx.artillery.common.LevelState;
 import com.gdx.artillery.common.ScoreController;
 import com.gdx.artillery.common.SoundController;
@@ -70,16 +69,18 @@ public class GameScreen extends ScreenAdapter {
     @Override
     public void render(float delta) {
 
-        if (gameWorld.getGameState().isMenu()) {
-            game.setScreen(new MenuScreen(game));
-        }
-
         if (gameWorld.getGameState().isPlaying()) {
             vehicleInputController.update(delta);
             cannonInputController.update(delta);
         }
-        controller.update(delta);
+
         renderer.render(delta);
+
+        if (gameWorld.getGameState().isMenu()) {
+            game.setScreen(new MenuScreen(game));
+        }
+
+        controller.update(delta);
 
     }
 
@@ -94,12 +95,11 @@ public class GameScreen extends ScreenAdapter {
     }
 
     @Override
-    public void pause () {
-        //gameWorld.setGameState(GameState.PAUSED);
+    public void pause() {
     }
 
     @Override
-    public void resume () {
+    public void resume() {
     }
 
     @Override

@@ -45,8 +45,6 @@ public class VehicleInputController {
 
         for (int i = 0; i < 2; i++) {
 
-            LevelState currentLevel = gameWorld.getCurrentLevel();
-
             if (Gdx.input.isTouched(i)) {
                 float screenX = Gdx.input.getX(i);
                 float screenY = Gdx.input.getY(i);
@@ -60,7 +58,7 @@ public class VehicleInputController {
                     x += GameConfig.VEHICLE_SPEED * delta;
                 }
 
-                soundChecker(currentLevel, true);
+                //soundChecker(currentLevel, true);
 
                 // Logic for block vehicle to leave world bounds
                 if (x <= 0)
@@ -71,7 +69,7 @@ public class VehicleInputController {
                 vehicle.setPosition(x, y);
 
             } else {
-                soundChecker(currentLevel, false);
+                //soundChecker(currentLevel, false);
             }
 
 
@@ -94,6 +92,7 @@ public class VehicleInputController {
             }
         }
     }
+
     private boolean isLeftSideTouched(Vector2 worldCoordinates) {
         return screenLeftSide.contains(worldCoordinates);
     }

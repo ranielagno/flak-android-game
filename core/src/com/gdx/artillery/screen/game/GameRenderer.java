@@ -11,8 +11,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Logger;
@@ -114,7 +112,8 @@ public class GameRenderer implements Disposable {
         bulletRegion = level1Atlas.findRegion(RegionNames.LAND_BULLET);
         enemyRegion = level1Atlas.findRegion(RegionNames.LAND_ENEMY_VEHICLE);
         enemyMissileRegion = level1Atlas.findRegion(RegionNames.LAND_ENEMY_MISSILE);
-        bossRegion = level1Atlas.findRegion(RegionNames.LAND_BOSS);;
+        bossRegion = level1Atlas.findRegion(RegionNames.LAND_BOSS);
+        ;
         bossMissileRegion = level1Atlas.findRegion(RegionNames.LAND_BOSS_MISSILE);
     }
 
@@ -125,7 +124,8 @@ public class GameRenderer implements Disposable {
         bulletRegion = level1Atlas.findRegion(RegionNames.LAND_BULLET);
         enemyRegion = level2Atlas.findRegion(RegionNames.SEA_ENEMY_VEHICLE);
         enemyMissileRegion = level2Atlas.findRegion(RegionNames.SEA_ENEMY_MISSILE);
-        bossRegion = level2Atlas.findRegion(RegionNames.SEA_BOSS);;
+        bossRegion = level2Atlas.findRegion(RegionNames.SEA_BOSS);
+        ;
         bossMissileRegion = level2Atlas.findRegion(RegionNames.SEA_BOSS_MISSILE);
     }
 
@@ -194,12 +194,12 @@ public class GameRenderer implements Disposable {
 
             EnemyVehicle enemy = enemies.get(i);
             float width = enemy.getWidth();
-            float x = enemy.isVehicleFromLeft()? enemy.getX(): enemy.getX() + width;
-            width = enemy.isVehicleFromLeft()? width: -width;
+            float x = enemy.isVehicleFromLeft() ? enemy.getX() : enemy.getX() + width;
+            width = enemy.isVehicleFromLeft() ? width : -width;
             batch.draw(enemyRegion,
                     x, enemy.getY(),
                     width, enemy.getHeight()
-                    );
+            );
 
         }
 

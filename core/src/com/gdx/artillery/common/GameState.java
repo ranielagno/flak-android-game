@@ -5,6 +5,7 @@ package com.gdx.artillery.common;
  */
 
 public enum GameState {
+
     MENU,
     PLAYING,
     PRACTICE,

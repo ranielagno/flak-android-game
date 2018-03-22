@@ -9,11 +9,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.Logger;
 import com.gdx.artillery.ArtilleryGame;
 import com.gdx.artillery.assets.AssetDescriptors;
 import com.gdx.artillery.assets.RegionNames;
-import com.gdx.artillery.common.SoundController;
 import com.gdx.artillery.screen.game.GameScreen;
 
 /**
@@ -21,9 +19,6 @@ import com.gdx.artillery.screen.game.GameScreen;
  */
 
 public class MenuScreen extends MenuScreenBase {
-
-    private static final Logger log = new Logger(MenuScreen.class.getName(), Logger.DEBUG);
-
 
     public MenuScreen(ArtilleryGame game) {
         super(game);
@@ -92,17 +87,14 @@ public class MenuScreen extends MenuScreenBase {
     }
 
     private void play() {
-        log.debug("play");
         game.setScreen(new GameScreen(game));
     }
 
     private void showHighScore() {
-        log.debug("show high score");
         game.setScreen(new HighScoreScreen(game));
     }
 
     private void showSettings() {
-        log.debug("show settings");
         game.setScreen(new SettingsScreen(game));
     }
 

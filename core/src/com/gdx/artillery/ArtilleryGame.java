@@ -1,17 +1,14 @@
 package com.gdx.artillery;
 
 import com.badlogic.gdx.Application;
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Logger;
 import com.gdx.artillery.common.ScoreController;
 import com.gdx.artillery.common.SoundController;
-import com.gdx.artillery.screen.game.GameScreen;
 import com.gdx.artillery.screen.loading.LoadingScreen;
 
 public class ArtilleryGame extends Game {
@@ -21,6 +18,8 @@ public class ArtilleryGame extends Game {
 
     private ScoreController scoreController;
     private SoundController soundController;
+
+    private Stage stage;
 
     @Override
     public void create() {
@@ -62,4 +61,5 @@ public class ArtilleryGame extends Game {
     public void setSoundController(SoundController soundController) {
         this.soundController = soundController;
     }
+
 }
